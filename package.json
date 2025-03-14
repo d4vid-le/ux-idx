@@ -11,7 +11,9 @@
 		"test:watch": "jest --watch",
 		"clean": "node scripts/cleanup.js",
 		"clean:all": "rm -rf .next .cursor node_modules/.cache && npm install",
-		"dev:clean": "npm run clean && npm run dev"
+		"dev:clean": "npm run clean && npm run dev",
+		"export": "next export",
+		"deploy": "next build && touch out/.nojekyll && gh-pages -d out -t true"
 	},
 	"dependencies": {
 		"@heroicons/react": "^2.2.0",
