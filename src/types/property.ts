@@ -6,7 +6,9 @@ export interface Property {
   bedrooms: number;
   bathrooms: number;
   sqft: number;
+  squareFeet?: number;
   imageUrl: string;
+  photos?: string[];
   status: 'For Sale' | 'For Rent' | 'Sold' | 'Pending';
   createdAt: string;
   location: {
@@ -18,6 +20,7 @@ export interface Property {
   propertyType?: string;
   yearBuilt?: number;
   neighborhood?: string;
+  city?: string;
   images?: string[];
   amenities?: string[];
   taxAmount?: number;
@@ -32,4 +35,5 @@ export interface Property {
   floorPlan?: string;
   virtualTour?: string;
   video?: string;
+  distance?: number;
 } 

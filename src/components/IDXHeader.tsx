@@ -144,8 +144,22 @@ const IDXHeader: React.FC = () => {
       // Add some "prediction" results if we have few matches
       if (combinedResults.length < 3) {
         combinedResults.push(
-          { id: 1000, name: `${value} area, New York, NY`, type: 'prediction' },
-          { id: 1001, name: `${value} neighborhood, Brooklyn, NY`, type: 'prediction' }
+          { 
+            id: 1000, 
+            name: `${value} area, New York, NY`, 
+            type: 'neighborhood',
+            city: 'New York',
+            lat: 40.7128,
+            lng: -74.0060
+          },
+          { 
+            id: 1001, 
+            name: `${value} neighborhood, Brooklyn, NY`, 
+            type: 'neighborhood',
+            city: 'Brooklyn',
+            lat: 40.6782,
+            lng: -73.9442
+          }
         );
       }
       
