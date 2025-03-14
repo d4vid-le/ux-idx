@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Heart, Trash2 } from 'lucide-react';
+import { Trash2, Heart } from 'lucide-react';
 import PropertyGrid from '@/components/PropertyGrid';
 import { Property } from '@/types/property';
 import { Button } from '@/components/ui/button';
@@ -79,10 +79,18 @@ export default function SavedPropertiesPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Saved Properties</h1>
-        <div className="flex items-center">
-          <Heart className="h-5 w-5 text-rose-500 mr-2" />
-          <span className="text-lg font-medium">{savedProperties.length} Properties</span>
-        </div>
+        <Button 
+          variant="outline" 
+          className="text-rose-600 border-rose-200 hover:bg-rose-50"
+          onClick={() => {
+            if (confirm('Are you sure you want to remove all saved properties?')) {
+              setSavedProperties([]);
+            }
+          }}
+        >
+          <Trash2 className="h-4 w-4 mr-2" />
+          Clear All
+        </Button>
       </div>
       
       {loading ? (
@@ -91,40 +99,16 @@ export default function SavedPropertiesPage() {
         </div>
       ) : savedProperties.length === 0 ? (
         <div className="flex flex-col items-center justify-center bg-gray-50 rounded-lg p-10 text-center">
-          <Heart className="h-16 w-16 text-gray-300 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-700 mb-2">No saved properties yet</h2>
+          <div className="text-center py-10">
+            <Heart className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+            <h3 className="text-lg font-medium text-gray-900 mb-1">No saved properties</h3>
+          </div>
           <p className="text-gray-500 mb-6 max-w-md">
             Start saving properties you're interested in by clicking the heart icon on property listings.
           </p>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-            Browse Properties
-          </Button>
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="flex justify-between">
-            <div className="flex space-x-2">
-              <Button variant="outline" className="text-sm">
-                Sort by: <span className="font-medium ml-1">Date Saved</span>
-              </Button>
-              <Button variant="outline" className="text-sm">
-                Filter
-              </Button>
-            </div>
-            <Button 
-              variant="outline" 
-              className="text-rose-600 border-rose-200 hover:bg-rose-50"
-              onClick={() => {
-                if (confirm('Are you sure you want to remove all saved properties?')) {
-                  setSavedProperties([]);
-                }
-              }}
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Clear All
-            </Button>
-          </div>
-
           <PropertyGrid properties={savedProperties} />
         </div>
       )}

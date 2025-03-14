@@ -66,7 +66,7 @@ const DashboardSidebar = () => {
         {/* Logo */}
         <div className="flex items-center px-4 mb-6">
           <Link href="/" className="flex items-center">
-            <span className="text-xl font-bold text-blue-600">IDX Solution</span>
+            <span className="text-xl font-bold text-blue-600">User Dashboard</span>
           </Link>
           <button
             onClick={toggleSidebar}

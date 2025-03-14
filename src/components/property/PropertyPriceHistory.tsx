@@ -156,7 +156,7 @@ export default function PropertyPriceHistory({
                             ? 'bg-amber-500' 
                             : item.event === 'Sold' 
                               ? 'bg-green-500' 
-                              : 'bg-purple-500'
+                              : 'bg-gray-500'
                       } transition-all duration-500 animate-grow-up`} 
                       style={{ 
                         height: `${getBarHeight(item.price)}%`,
@@ -204,7 +204,7 @@ export default function PropertyPriceHistory({
                             ? 'bg-amber-100 text-amber-800' 
                             : item.event === 'Sold' 
                               ? 'bg-green-100 text-green-800' 
-                              : 'bg-purple-100 text-purple-800'
+                              : 'bg-gray-100 text-gray-800'
                       }`}>
                         {item.event}
                       </span>

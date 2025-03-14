@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Heart, Bed, Bath, Square } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Bed, Bath, Square, Heart } from 'lucide-react';
 import { Property } from '@/types/property';
 import { formatPrice } from '@/lib/utils';
 
@@ -102,7 +102,9 @@ export default function SimilarProperties({
                   className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors z-10"
                   aria-label={favorites[property.id] ? "Remove from favorites" : "Add to favorites"}
                 >
-                  <Heart size={18} className={favorites[property.id] ? "text-red-500 fill-red-500" : "text-gray-500"} />
+                  <Heart 
+                    className={`h-4 w-4 ${favorites[property.id] ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+                  />
                 </button>
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-3">
                   <div className="font-bold">{formatPrice(property.price)}</div>

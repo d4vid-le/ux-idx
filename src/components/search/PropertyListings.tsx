@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Property } from '@/types/property';
-import { Loader2, Heart, MapPin } from 'lucide-react';
+import { Loader2, MapPin, BedDouble, Bath, Square, Heart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -84,12 +84,12 @@ const PropertyListings: React.FC<PropertyListingsProps> = ({
                   />
                   {/* Favorite Button */}
                   <button 
-                    className="absolute top-2 right-2 h-8 w-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
                     onClick={(e) => toggleFavorite(e, property.id)}
+                    className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors z-10"
+                    aria-label={favorites[property.id] ? "Remove from favorites" : "Add to favorites"}
                   >
                     <Heart 
-                      size={18} 
-                      className={favorites[property.id] ? "fill-red-500 text-red-500" : "text-gray-400"} 
+                      className={`h-4 w-4 ${favorites[property.id] ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
                     />
                   </button>
                   {/* Status Badge */}

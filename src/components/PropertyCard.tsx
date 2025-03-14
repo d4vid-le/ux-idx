@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { Badge } from './ui/badge';
+import { Heart } from 'lucide-react';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface PropertyCardProps {
   id: string;
@@ -25,6 +28,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   imageUrl,
   status
 }) => {
+  // Use our custom favorites hook
+  const { isFavorite, toggleFavorite } = useFavorites();
+  
+  // Toggle favorite status on heart click
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation from Link component
+    toggleFavorite(id);
+  };
+
   // Format price with commas
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -56,6 +68,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="absolute top-2 left-2">
             <Badge className={statusColor}>{status}</Badge>
           </div>
+          
+          {/* Favorite Button */}
+          <button 
+            className="absolute top-2 right-2 h-8 w-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+            onClick={handleFavoriteClick}
+            aria-label={isFavorite(id) ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart 
+              className={`h-5 w-5 ${isFavorite(id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+            />
+          </button>
         </div>
 
         {/* Property Info */}

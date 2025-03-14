@@ -47,7 +47,7 @@ const Pricing = () => {
 			</div>
 			<div className="mt-2 relative">
 				<Badge
-					className="rounded-full bg-purple-50 px-4 py-2"
+					className="rounded-full bg-gray-100 px-4 py-2"
 					variant="secondary">
 					Save 65%
 				</Badge>

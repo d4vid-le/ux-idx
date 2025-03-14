@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import PropertyCard from './PropertyCard';
 import { Property } from '../types/property';

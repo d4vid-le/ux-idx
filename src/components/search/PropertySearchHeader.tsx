@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Search, MapPin, ChevronDown, Heart, ArrowUpDown } from 'lucide-react';
+import { Search, MapPin, ChevronDown, ArrowUpDown, Heart } from 'lucide-react';
 import Link from 'next/link';
 
 interface PropertySearchHeaderProps {
@@ -35,7 +35,7 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+  const [searchTerm, setSearchTerm] = useState(searchParams ? searchParams.get('q') || '' : '');
   
   // Track which dropdown is open
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -100,7 +100,7 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/saved" className="text-gray-700 hover:text-gray-900">
-                <Heart size={20} />
+                <Heart className="h-5 w-5 text-gray-700 hover:text-gray-900" />
               </Link>
               <Button variant="outline" className="border-gray-300 text-gray-700">
                 <Link href="/dashboard">Log in</Link>

@@ -1,13 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Bell, User, Search, X } from 'lucide-react';
+import { Bell, User } from 'lucide-react';
 import Link from 'next/link';
 import { useAuthContext } from '@/providers/AuthProvider';
 
 const DashboardHeader = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
   const { user } = useAuthContext();
   
   // Use user data from auth context if available, otherwise fall back to mock data
@@ -20,45 +18,15 @@ const DashboardHeader = () => {
   // Mock notification count - in a real app this would come from a notifications system
   const unreadNotifications = 2;
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Implement search functionality
-    console.log('Searching for:', searchQuery);
-  };
-
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
       <div className="px-4 sm:px-6 h-16 flex items-center justify-between">
-        {/* Left: Page title or search */}
-        {showSearch ? (
-          <div className="relative flex-1 max-w-md">
-            <form onSubmit={handleSearch} className="relative">
-              <input
-                type="text"
-                placeholder="Search properties, saved items..."
-                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
-              />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              <button 
-                type="button" 
-                className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
-                onClick={() => setShowSearch(false)}
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </form>
-          </div>
-        ) : (
-          <button
-            className="p-2 text-gray-500 hover:text-gray-700 focus:outline-none"
-            onClick={() => setShowSearch(true)}
-          >
-            <Search className="h-5 w-5" />
-          </button>
-        )}
+        {/* Left: Logo or brand */}
+        <div className="flex items-center">
+          <Link href="/dashboard" className="text-xl font-bold text-blue-600">
+            
+          </Link>
+        </div>
 
         {/* Right: User menu and notifications */}
         <div className="flex items-center space-x-4">

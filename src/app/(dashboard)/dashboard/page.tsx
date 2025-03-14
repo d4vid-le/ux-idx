@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PropertyGrid from '@/components/PropertyGrid';
-import PropertySearch from '@/components/dashboard/PropertySearch';
 import AgentInfo from '@/components/dashboard/AgentInfo';
-import ProfileSettings from '@/components/dashboard/ProfileSettings';
 import { Property } from '@/types/property';
-import { Activity, Heart, Map, Bell, User, Search, Settings } from 'lucide-react';
+import { Activity, Map, Bell, User, Search, Settings, Heart, Home, TrendingUp, Calendar } from 'lucide-react';
+import { useFavorites } from '@/hooks/useFavorites';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import PropertyCard from '@/components/PropertyCard';
 
 export default function DashboardPage() {
   const [savedProperties, setSavedProperties] = useState<Property[]>([]);
@@ -16,8 +17,7 @@ export default function DashboardPage() {
   const [recentlyViewed, setRecentlyViewed] = useState<Property[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchResults, setSearchResults] = useState<Property[]>([]);
-  const [activeTab, setActiveTab] = useState('saved');
+  const { favoriteIds } = useFavorites();
   const [agent] = useState({
     name: 'John Smith',
     title: 'Senior Real Estate Agent',
@@ -27,322 +27,251 @@ export default function DashboardPage() {
     office: 'IDX Solution Real Estate',
   });
 
-  const [userProfile, setUserProfile] = useState({
-    name: 'Demo User',
-    email: 'demo@idxsolution.com',
-    phone: '(555) 987-6543',
-    notifications: {
-      email: true,
-      push: true,
-      sms: false,
-    },
-    twoFactorEnabled: false,
-  });
-
-  // Simulate fetching user data
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        // In a real app, these would be API calls to fetch user-specific data
-        // Mock data for demonstration
-        const mockSavedProperties = [
-          {
-            id: '1',
-            title: 'Luxury Condo in Manhattan',
-            address: '123 Park Avenue, New York, NY',
-            price: 1250000,
-            bedrooms: 2,
-            bathrooms: 2,
-            sqft: 1500,
-            propertyType: 'Condo',
-            status: 'For Sale',
-            imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267',
-            createdAt: new Date().toISOString(),
-          },
-          {
-            id: '2',
-            title: 'Penthouse with City Views',
-            address: '456 5th Avenue, New York, NY',
-            price: 3500000,
-            bedrooms: 3,
-            bathrooms: 3.5,
-            sqft: 2800,
-            propertyType: 'Penthouse',
-            status: 'For Sale',
-            imageUrl: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb',
-            createdAt: new Date().toISOString(),
-          },
-        ];
-        
-        const mockSearches = [
-          { id: 1, query: 'Manhattan, 2 bed, Under $2M', date: '2023-10-15', count: 156 },
-          { id: 2, query: 'Brooklyn Heights', date: '2023-10-14', count: 73 },
-          { id: 3, query: 'Upper East Side, 3+ bed', date: '2023-10-10', count: 42 },
-        ];
-        
-        const mockNotifications = [
-          { id: 1, message: 'Price reduced on 123 Park Avenue', date: '2023-10-15', read: false },
-          { id: 2, message: 'New property matching your search', date: '2023-10-14', read: false },
-          { id: 3, message: 'Saved search updated with 5 new properties', date: '2023-10-12', read: true },
-        ];
-        
-        setSavedProperties(mockSavedProperties);
-        setRecentSearches(mockSearches);
-        setRecentlyViewed(mockSavedProperties.slice().reverse());
-        setNotifications(mockNotifications);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
+    // Simulate fetching user data
+    const mockProperties: Property[] = [
+      {
+        id: '1',
+        title: 'Luxury Condo with Ocean View',
+        address: 'Ocean Drive, Miami, FL',
+        price: 1250000,
+        bedrooms: 3,
+        bathrooms: 2,
+        sqft: 2100,
+        imageUrl: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=2070&auto=format&fit=crop',
+        status: 'For Sale',
+        createdAt: new Date().toISOString(),
+        location: { lat: 25.7617, lng: -80.1918 },
+        description: 'Beautiful 3-bedroom condo with stunning ocean views',
+        propertyType: 'Condo',
+        amenities: ['Pool', 'Gym', 'Parking', 'Security']
+      },
+      {
+        id: '2',
+        title: 'Modern Penthouse in Downtown',
+        address: 'Downtown, Austin, TX',
+        price: 1850000,
+        bedrooms: 4,
+        bathrooms: 3.5,
+        sqft: 3200,
+        imageUrl: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop',
+        status: 'For Sale',
+        createdAt: new Date().toISOString(),
+        location: { lat: 30.2672, lng: -97.7431 },
+        description: 'Exquisite penthouse with panoramic city views',
+        propertyType: 'Penthouse',
+        amenities: ['Rooftop Terrace', 'Smart Home', 'Concierge', 'Wine Cellar']
+      },
+      {
+        id: '3',
+        title: 'Charming Townhouse Near Park',
+        address: 'Park Avenue, Brooklyn, NY',
+        price: 950000,
+        bedrooms: 3,
+        bathrooms: 2.5,
+        sqft: 1800,
+        imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop',
+        status: 'For Sale',
+        createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+        location: { lat: 40.6782, lng: -73.9442 },
+        description: 'Lovely townhouse with modern amenities near Central Park',
+        propertyType: 'Townhouse',
+        amenities: ['Backyard', 'Fireplace', 'Renovated Kitchen', 'Hardwood Floors']
+      },
+      {
+        id: '4',
+        title: 'Industrial Loft in Arts District',
+        address: 'Arts District, Los Angeles, CA',
+        price: 875000,
+        bedrooms: 2,
+        bathrooms: 2,
+        sqft: 1650,
+        imageUrl: 'https://images.unsplash.com/photo-1565953554309-d181306db7b5?q=80&w=2127&auto=format&fit=crop',
+        status: 'For Sale',
+        createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+        location: { lat: 34.0522, lng: -118.2437 },
+        description: 'Spacious loft with high ceilings and original features',
+        propertyType: 'Loft',
+        amenities: ['Exposed Brick', 'Large Windows', 'Open Floor Plan', 'Artist Studio']
       }
-    };
-    
-    fetchUserData();
-  }, []);
+    ];
 
-  const handleSearch = (filters: any) => {
-    setLoading(true);
-    // In a real app, this would be an API call to search properties
-    // For now, we'll simulate a search with the mock data
-    const filteredProperties = savedProperties.filter(property => {
-      if (filters.propertyType && property.propertyType !== filters.propertyType) return false;
-      if (filters.beds && property.bedrooms < parseInt(filters.beds)) return false;
-      if (filters.baths && property.bathrooms < parseInt(filters.baths)) return false;
-      if (property.price < filters.priceRange[0] || property.price > filters.priceRange[1]) return false;
-      if (filters.location && !property.address.toLowerCase().includes(filters.location.toLowerCase())) return false;
-      return true;
-    });
+    // Filter properties based on favoriteIds
+    const filteredSavedProperties = mockProperties.filter(property => 
+      favoriteIds.includes(property.id)
+    );
     
-    setSearchResults(filteredProperties);
-    setActiveTab('search');
+    // If no saved properties, use the first two as defaults for demo purposes
+    setSavedProperties(filteredSavedProperties.length > 0 ? filteredSavedProperties : mockProperties.slice(0, 2));
+    setRecentlyViewed(mockProperties.slice(1, 3));  // Default recently viewed
+
+    // Mock recent searches
+    setRecentSearches([
+      { id: 1, query: 'Condos in Miami', date: '2023-10-15' },
+      { id: 2, query: 'Apartments in New York', date: '2023-10-14' },
+      { id: 3, query: 'Houses with pool in Los Angeles', date: '2023-10-12' },
+    ]);
+
+    // Mock notifications
+    setNotifications([
+      { id: 1, message: 'Price drop on Luxury Condo with Ocean View', date: '2023-10-16', read: false },
+      { id: 2, message: 'New properties matching your search', date: '2023-10-15', read: false },
+      { id: 3, message: 'Your saved property has been sold', date: '2023-10-13', read: true },
+    ]);
+
     setLoading(false);
-  };
+  }, [favoriteIds]);
 
   const unreadNotificationCount = notifications.filter(n => !n.read).length;
 
-  const handleProfileUpdate = (data: any) => {
-    setUserProfile(data);
-    // In a real app, this would be an API call to update the user's profile
-    console.log('Profile updated:', data);
+  // Format date to display in a nice format
+  const formatDate = () => {
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date().toLocaleDateString('en-US', options);
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div className="flex items-center space-x-2">
-          <div className="relative">
-            <Bell className="h-6 w-6 text-gray-500 cursor-pointer" />
-            {unreadNotificationCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
-                {unreadNotificationCount}
-              </span>
-            )}
+    <div className="space-y-8">
+      {/* Welcome Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-6 text-white">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Welcome Back!</h1>
+            <p className="text-blue-100">{formatDate()}</p>
           </div>
-          <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-            <User className="h-5 w-5" />
+          <div className="hidden md:block">
+            <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-lg p-3">
+              <Bell className="h-5 w-5 text-blue-200" />
+              <span className="text-sm font-medium">{unreadNotificationCount} new notifications</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* User Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Saved Properties</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center">
-              <Heart className="h-7 w-7 text-rose-500 mr-2" />
-              <div className="text-2xl font-bold">{savedProperties.length}</div>
+      {/* Dashboard Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Stats Cards */}
+        <div className="md:col-span-8 space-y-6">
+          <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+            <TrendingUp className="h-5 w-5 mr-2 text-blue-600" />
+            Your Activity Overview
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="bg-white border-none shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Saved Properties</CardTitle>
+                <Heart className="h-5 w-5 text-rose-500" fill="#f43f5e" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{savedProperties.length}</div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Properties you've favorited
+                </p>
+                <Link href="/dashboard/saved" className="text-blue-600 text-sm font-medium mt-4 inline-block hover:underline">
+                  View all →
+                </Link>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-none shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Saved Searches</CardTitle>
+                <Map className="h-5 w-5 text-blue-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{recentSearches.length}</div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Search criteria you've saved
+                </p>
+                <Link href="/dashboard/searches" className="text-blue-600 text-sm font-medium mt-4 inline-block hover:underline">
+                  View all →
+                </Link>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-none shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Notifications</CardTitle>
+                <Bell className="h-5 w-5 text-amber-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{notifications.length}</div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Updates and alerts for you
+                </p>
+                <Link href="/dashboard/notifications" className="text-blue-600 text-sm font-medium mt-4 inline-block hover:underline">
+                  View all →
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Featured Properties Section */}
+          <div className="space-y-4 mt-8">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+                <Home className="h-5 w-5 mr-2 text-blue-600" />
+                Featured Properties
+              </h2>
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Saved Searches</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center">
-              <Map className="h-7 w-7 text-blue-500 mr-2" />
-              <div className="text-2xl font-bold">{recentSearches.length}</div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center">
-              <Activity className="h-7 w-7 text-emerald-500 mr-2" />
-              <div className="text-2xl font-bold">{recentlyViewed.length}</div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Agent Information */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <PropertySearch onSearch={handleSearch} />
-        </div>
-        <div>
-          <AgentInfo agent={agent} />
-        </div>
-      </div>
-
-      {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="saved">Saved Properties</TabsTrigger>
-          <TabsTrigger value="searches">Saved Searches</TabsTrigger>
-          <TabsTrigger value="viewed">Recently Viewed</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="search">Search Results</TabsTrigger>
-          <TabsTrigger value="profile">Profile Settings</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="saved" className="space-y-4">
-          <h2 className="text-xl font-semibold">Your Saved Properties</h2>
-          {loading ? (
-            <div className="text-center py-10">Loading saved properties...</div>
-          ) : savedProperties.length === 0 ? (
-            <div className="text-center py-10 bg-gray-50 rounded-lg">
-              <Heart className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">No saved properties yet</h3>
-              <p className="text-gray-500">
-                Properties you save will appear here for easy access.
-              </p>
-            </div>
-          ) : (
-            <PropertyGrid properties={savedProperties} />
-          )}
-        </TabsContent>
-        
-        <TabsContent value="searches" className="space-y-4">
-          <h2 className="text-xl font-semibold">Your Saved Searches</h2>
-          {loading ? (
-            <div className="text-center py-10">Loading saved searches...</div>
-          ) : recentSearches.length === 0 ? (
-            <div className="text-center py-10 bg-gray-50 rounded-lg">
-              <Map className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">No saved searches yet</h3>
-              <p className="text-gray-500">
-                Save your searches to get notified when new properties match your criteria.
-              </p>
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Search Query</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Saved</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Properties</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {recentSearches.map((search) => (
-                    <tr key={search.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{search.query}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{search.date}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{search.count} properties</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" className="text-blue-600 hover:text-blue-900 mr-4">View</a>
-                        <a href="#" className="text-red-600 hover:text-red-900">Delete</a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </TabsContent>
-        
-        <TabsContent value="viewed" className="space-y-4">
-          <h2 className="text-xl font-semibold">Recently Viewed Properties</h2>
-          {loading ? (
-            <div className="text-center py-10">Loading recently viewed properties...</div>
-          ) : recentlyViewed.length === 0 ? (
-            <div className="text-center py-10 bg-gray-50 rounded-lg">
-              <Activity className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">No recently viewed properties</h3>
-              <p className="text-gray-500">
-                Properties you view will appear here for quick reference.
-              </p>
-            </div>
-          ) : (
-            <PropertyGrid properties={recentlyViewed} />
-          )}
-        </TabsContent>
-        
-        <TabsContent value="notifications" className="space-y-4">
-          <h2 className="text-xl font-semibold">Notifications</h2>
-          {loading ? (
-            <div className="text-center py-10">Loading notifications...</div>
-          ) : notifications.length === 0 ? (
-            <div className="text-center py-10 bg-gray-50 rounded-lg">
-              <Bell className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">No notifications</h3>
-              <p className="text-gray-500">
-                You'll be notified about property updates and saved search results.
-              </p>
-            </div>
-          ) : (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <ul className="divide-y divide-gray-200">
-                {notifications.map((notification) => (
-                  <li key={notification.id} className={`p-4 hover:bg-gray-50 ${!notification.read ? 'bg-blue-50' : ''}`}>
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0 pt-0.5">
-                        <Bell className={`h-5 w-5 ${!notification.read ? 'text-blue-500' : 'text-gray-400'}`} />
-                      </div>
-                      <div className="ml-3 flex-1">
-                        <p className={`text-sm font-medium ${!notification.read ? 'text-gray-900' : 'text-gray-700'}`}>
-                          {notification.message}
-                        </p>
-                        <p className="text-sm text-gray-500">{notification.date}</p>
-                      </div>
-                    </div>
-                  </li>
+            
+            {/* Custom Property Grid with better spacing */}
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {savedProperties.map((property) => (
+                  <div key={property.id} className="h-full">
+                    <PropertyCard
+                      id={property.id}
+                      title={property.title}
+                      address={property.address}
+                      price={property.price}
+                      bedrooms={property.bedrooms}
+                      bathrooms={property.bathrooms}
+                      sqft={property.sqft}
+                      imageUrl={property.imageUrl}
+                      status={property.status}
+                    />
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="search" className="space-y-4">
-          <h2 className="text-xl font-semibold">Search Results</h2>
-          {loading ? (
-            <div className="text-center py-10">Searching properties...</div>
-          ) : searchResults.length === 0 ? (
-            <div className="text-center py-10 bg-gray-50 rounded-lg">
-              <Search className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">No properties found</h3>
-              <p className="text-gray-500">
-                Try adjusting your search criteria to find more properties.
-              </p>
+          </div>
+        </div>
+        
+        {/* Agent Information */}
+        <div className="md:col-span-4">
+          <h2 className="text-xl font-semibold text-gray-800 flex items-center mb-4">
+            <User className="h-5 w-5 mr-2 text-blue-600" />
+            Your Agent
+          </h2>
+          <div className="bg-white rounded-lg shadow-md p-1">
+            <AgentInfo agent={agent} />
+          </div>
+          
+          {/* Recent Activity Timeline */}
+          <div className="mt-6 bg-white rounded-lg shadow-md p-4">
+            <h3 className="text-md font-semibold text-gray-800 flex items-center mb-4">
+              <Calendar className="h-4 w-4 mr-2 text-blue-600" />
+              Recent Updates
+            </h3>
+            <div className="space-y-3">
+              {notifications.map((notification, index) => (
+                <div key={notification.id} className="flex items-start space-x-3">
+                  <div className={`flex-shrink-0 h-2 w-2 mt-2 rounded-full ${!notification.read ? 'bg-blue-500' : 'bg-gray-300'}`}></div>
+                  <div>
+                    <p className="text-sm text-gray-700">{notification.message}</p>
+                    <p className="text-xs text-gray-500">{notification.date}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ) : (
-            <PropertyGrid properties={searchResults} />
-          )}
-        </TabsContent>
-
-        <TabsContent value="profile" className="space-y-4">
-          <h2 className="text-xl font-semibold">Profile Settings</h2>
-          <ProfileSettings user={userProfile} onUpdate={handleProfileUpdate} />
-        </TabsContent>
-      </Tabs>
+            <Button variant="ghost" size="sm" className="text-blue-600 mt-3 w-full hover:bg-blue-50">
+              Clear All Notifications
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 } 

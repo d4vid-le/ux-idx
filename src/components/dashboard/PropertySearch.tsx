@@ -31,7 +31,7 @@ export default function PropertySearch({ onSearch }: PropertySearchProps) {
   return (
     <Card className="mb-6">
       <CardHeader>
-        <CardTitle>Search Properties</CardTitle>
+        <CardTitle>Search</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -115,7 +115,7 @@ export default function PropertySearch({ onSearch }: PropertySearchProps) {
 
           <div className="flex items-end">
             <Button onClick={handleSearch} className="w-full">
-              Search Properties
+              Search
             </Button>
           </div>
         </div>

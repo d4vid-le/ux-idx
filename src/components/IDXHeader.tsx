@@ -338,9 +338,9 @@ const IDXHeader: React.FC = () => {
             <div className="hidden lg:flex items-center space-x-3">
               <Link 
                 href="/login" 
-                className="hidden md:flex items-center rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                className="flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 ease-in-out"
               >
-                <UserIcon className="h-5 w-5 mr-2 text-blue-600" />
+                <UserIcon className="h-5 w-5 mr-2 text-gray-800" />
                 <span>Login</span>
               </Link>
               <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white h-auto py-2 px-4">
@@ -375,9 +375,9 @@ const IDXHeader: React.FC = () => {
                 <div className="flex flex-wrap gap-3">
                   <Link 
                     href="/login" 
-                    className="bg-blue-500 hover:bg-blue-600 text-white w-auto px-5"
+                    className="flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 ease-in-out w-auto"
                   >
-                    <UserIcon className="h-5 w-5 mr-2 text-white" />
+                    <UserIcon className="h-5 w-5 mr-2 text-gray-800" />
                     <span>Login</span>
                   </Link>
                   <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white w-auto px-5">

@@ -388,7 +388,14 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({
             </Button>
           </div>
           
-          <div>
+          <div className="mt-4 md:mt-0 sm:mt-4">
+            <style jsx global>{`
+              @media (max-width: 750px) {
+                .mt-4 {
+                  margin-top: 14px !important;
+                }
+              }
+            `}</style>
             <Link href="/search">
               <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 active:bg-blue-100">
                 View All Properties

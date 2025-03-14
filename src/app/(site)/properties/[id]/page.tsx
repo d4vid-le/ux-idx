@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Heart, Share2, Calendar, MapPin, Phone, Mail, Info, FileText, Home, DollarSign, Printer, Grid } from 'lucide-react';
+import { ArrowLeft, Share2, Calendar, MapPin, Phone, Mail, Info, FileText, Home, DollarSign, Printer, Grid, Heart } from 'lucide-react';
 import { mockProperties } from '@/data/mockProperties';
 import { Property } from '@/types/property';
 import { formatPrice, formatDate } from '@/lib/utils';
@@ -100,6 +100,10 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     }
   };
 
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -193,10 +197,13 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
           />
           <div className="absolute top-4 right-4 flex space-x-2">
             <button 
-              className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={toggleFavorite}
+              className="flex items-center justify-center h-10 w-10 rounded-full bg-white shadow-md hover:bg-gray-50 transition-colors"
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
-              <Heart size={20} className={isFavorite ? "text-red-500 fill-red-500" : "text-gray-700"} />
+              <Heart 
+                className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+              />
             </button>
             <button 
               className="bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
@@ -274,15 +281,13 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
           {/* Quick Action Buttons */}
           <div className="flex flex-wrap gap-2 animate-slide-in-right">
             <button 
-              onClick={() => setIsFavorite(!isFavorite)}
-              className={`flex items-center px-3 py-2 rounded-md ${
-                isFavorite 
-                  ? 'bg-red-50 text-red-600 border border-red-200' 
-                  : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
-              }`}
+              onClick={toggleFavorite}
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-white border border-gray-200 hover:bg-gray-50 transition-colors"
             >
-              <Heart size={18} className={`mr-2 ${isFavorite ? 'fill-red-500' : ''}`} />
-              {isFavorite ? 'Saved' : 'Save'}
+              <Heart 
+                className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+              />
+              <span>{isFavorite ? 'Saved' : 'Save'}</span>
             </button>
             
             <button 

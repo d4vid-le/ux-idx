@@ -23,26 +23,7 @@ export interface Props {
 }
 
 export const MyUserContextProvider = (props: Props) => {
-	// Check if we have Supabase credentials before trying to use them
-	const isDevelopment = process.env.NODE_ENV === 'development';
-	const noCredentials = !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-	
-	// Use mock data in development if no credentials are provided
-	if (isDevelopment && noCredentials) {
-		const contextValue = {
-			accessToken: null,
-			user: null,
-			userDetails: null,
-			isLoading: false,
-			subscription: null,
-		};
-
-		return (
-			<UserContext.Provider value={contextValue} {...props} />
-		);
-	}
-
-	// Regular implementation with actual Supabase
+	// Always call hooks at the top level, regardless of conditions
 	const {
 		session,
 		isLoading: isLoadingUser,
@@ -53,16 +34,32 @@ export const MyUserContextProvider = (props: Props) => {
 	const [isLoadingData, setIsloadingData] = useState(false);
 	const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
 	const [subscription, setSubscription] = useState<Subscription | null>(null);
-
-	const getUserDetails = () => supabase.from("users").select("*").single();
-	const getSubscription = () =>
-		supabase
+	
+	// Check if we have Supabase credentials
+	const isDevelopment = process.env.NODE_ENV === 'development';
+	const noCredentials = !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+	
+	// Define these functions regardless of whether we'll use them
+	const getUserDetails = () => {
+		if (isDevelopment && noCredentials) return Promise.resolve({ data: null });
+		return supabase.from("users").select("*").single();
+	};
+	
+	const getSubscription = () => {
+		if (isDevelopment && noCredentials) return Promise.resolve({ data: null });
+		return supabase
 			.from("subscriptions")
 			.select("*, prices(*, products(*))")
 			.in("status", ["trialing", "active"])
 			.single();
+	};
 
 	useEffect(() => {
+		// Skip data fetching in development with no credentials
+		if (isDevelopment && noCredentials) {
+			return;
+		}
+		
 		if (user && !isLoadingData && !userDetails && !subscription) {
 			setIsloadingData(true);
 			Promise.allSettled([getUserDetails(), getSubscription()]).then(
@@ -83,7 +80,7 @@ export const MyUserContextProvider = (props: Props) => {
 			setUserDetails(null);
 			setSubscription(null);
 		}
-	}, [user, isLoadingUser]);
+	}, [user, isLoadingUser, isDevelopment, noCredentials, userDetails, subscription, isLoadingData]);
 
 	const value = {
 		accessToken,
@@ -92,6 +89,22 @@ export const MyUserContextProvider = (props: Props) => {
 		isLoading: isLoadingUser || isLoadingData,
 		subscription,
 	};
+
+	// Use mock data in development if no credentials are provided
+	if (isDevelopment && noCredentials) {
+		return (
+			<UserContext.Provider 
+				value={{
+					accessToken: null,
+					user: null,
+					userDetails: null,
+					isLoading: false,
+					subscription: null,
+				}} 
+				{...props} 
+			/>
+		);
+	}
 
 	return <UserContext.Provider value={value} {...props} />;
 };
