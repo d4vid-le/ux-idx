@@ -2,7 +2,8 @@
 const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
-    unoptimized: process.env.NODE_ENV === 'production' ? false : true,
+    // Vercel handles image optimization automatically
+    unoptimized: false,
   },
 }
 
