@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IDX Real Estate Solution</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #1a365d;
+    }
+    code {
+      background-color: #f5f5f5;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 16px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .tip {
+      background-color: #ebf8ff;
+      border-left: 4px solid #4299e1;
+      padding: 12px 16px;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>IDX Real Estate Solution</h1>
+  <p>Welcome to the IDX Real Estate Solution project. This document provides information about the project structure and development workflow.</p>
+
+  <div class="card">
+    <h2>Getting Started</h2>
+    <p>To start the development server:</p>
+    <pre><code>npm run dev</code></pre>
+    <p>To run tests:</p>
+    <pre><code>npm test</code></pre>
+    <p>To build for production:</p>
+    <pre><code>npm run build</code></pre>
+  </div>
+
+  <div class="card">
+    <h2>Project Structure</h2>
+    <p>The project follows a well-organized structure:</p>
+    <ul>
+      <li><code>src/app</code> - Next.js App Router pages and layouts</li>
+      <li><code>src/components</code> - React components organized by feature</li>
+      <li><code>src/hooks</code> - Custom React hooks for state and API integration</li>
+      <li><code>src/lib</code> - Utility functions, API clients, and core functionality</li>
+      <li><code>src/__tests__</code> - Test files organized by type (components, hooks, etc.)</li>
+      <li><code>public</code> - Static assets</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Key Features</h2>
+    <ul>
+      <li>Property search with map integration</li>
+      <li>Property detail pages with photo galleries and mortgage calculators</li>
+      <li>Agent profiles and contact</li>
+      <li>Responsive design for desktop and mobile</li>
+      <li>Authentication with Supabase</li>
+      <li>Integration with REBNY IDX API (mock implementation for now)</li>
+    </ul>
+  </div>
+
+  <div class="tip">
+    <strong>Development Tip:</strong> Make sure to check the <code>README.md</code> and <code>PROJECT_PLAN.md</code> files for more detailed information about the project and its requirements.
+  </div>
+
+  <div class="card">
+    <h2>Technology Stack</h2>
+    <ul>
+      <li><strong>Framework:</strong> Next.js with App Router</li>
+      <li><strong>UI:</strong> React with Tailwind CSS</li>
+      <li><strong>State Management:</strong> React Hooks</li>
+      <li><strong>Authentication:</strong> Supabase Auth</li>
+      <li><strong>Database:</strong> Supabase (PostgreSQL)</li>
+      <li><strong>Testing:</strong> Jest and React Testing Library</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Contributing</h2>
+    <p>When contributing to this project, please:</p>
+    <ul>
+      <li>Create a branch for each feature or bugfix</li>
+      <li>Write tests for new features</li>
+      <li>Follow the established code style</li>
+      <li>Update documentation as needed</li>
+    </ul>
+  </div>
+
+  <footer style="margin-top: 40px; text-align: center; color: #666;">
+    <p>IDX Real Estate Solution &copy; 2023</p>
+  </footer>
+</body>
+</html> 

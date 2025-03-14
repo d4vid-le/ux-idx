@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDX Dashboard - Bypass Auth</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f7fb;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+            text-align: center;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+        p {
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .loading {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .status {
+            padding: 1rem;
+            background-color: #f0f9ff;
+            border-radius: 4px;
+            margin-top: 1.5rem;
+            text-align: left;
+            font-family: monospace;
+            height: 100px;
+            overflow-y: auto;
+        }
+        .status p {
+            margin: 0.25rem 0;
+            font-size: 0.9rem;
+        }
+        .button {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Accessing IDX Dashboard</h1>
+        <div class="loading"></div>
+        <p>Setting up demo user and redirecting to the dashboard...</p>
+        <p>If you are not redirected automatically, <a href="javascript:runBypass()" class="button">Click Here</a></p>
+        
+        <div class="status" id="status">
+            <p>Initializing bypass process...</p>
+        </div>
+    </div>
+
+    <script>
+        // Function to add status messages
+        function addStatus(message) {
+            const statusEl = document.getElementById('status');
+            const p = document.createElement('p');
+            p.textContent = message;
+            statusEl.appendChild(p);
+            statusEl.scrollTop = statusEl.scrollHeight;
+        }
+
+        // Function to set up demo user
+        function runBypass() {
+            addStatus('Clearing any existing user data...');
+            localStorage.removeItem('idx_user');
+            sessionStorage.removeItem('idx_user');
+            
+            addStatus('Creating demo user object...');
+            const demoUser = {
+                id: 'demo-user-12345',
+                email: 'demo@idxsolution.com',
+                name: 'Demo User',
+                avatar: null,
+                role: 'user',
+                lastLogin: new Date().toISOString(),
+                createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+                preferences: {
+                    notifications: true,
+                    darkMode: false
+                },
+                token: 'demo-token-' + Math.random().toString(36).substring(2, 15)
+            };
+            
+            addStatus('Storing user in localStorage...');
+            localStorage.setItem('idx_user', JSON.stringify(demoUser));
+            
+            addStatus('Setup complete! Redirecting to dashboard...');
+            
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1500);
+        }
+
+        // Auto-run on load
+        window.onload = runBypass;
+    </script>
+</body>
+</html> 
