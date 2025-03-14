@@ -2,12 +2,8 @@
 const nextConfig = {
   images: {
     domains: ['images.unsplash.com'],
-    unoptimized: true,
+    unoptimized: process.env.NODE_ENV === 'production' ? false : true,
   },
-  output: 'export',
-  basePath: '/ux-idx',
-  assetPrefix: '/ux-idx/',
-  trailingSlash: true,
 }
 
 module.exports = nextConfig
