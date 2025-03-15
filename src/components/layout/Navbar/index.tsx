@@ -2,37 +2,41 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Building, User as UserIcon, Menu, X } from "lucide-react";
 
 const links = [
 	{
-		label: "Products",
+		label: "Home",
 		href: "/",
 	},
 	{
-		label: "Benefit",
-		href: "/",
-	},
-	{
-		label: "How it Works",
-		href: "/",
-	},
-	{
-		label: "Pricing",
-		href: "/#pricing",
-	},
-	{
-		label: "Company",
-		href: "/",
+		label: "Properties",
+		href: "/search",
 	},
 ];
 
 const Navbar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [scrolled, setScrolled] = useState(false);
 
 	const supabaseClient = useSupabaseClient();
 
 	const { user } = useUser();
+
+	// Add scroll effect for navbar
+	useEffect(() => {
+		const handleScroll = () => {
+			if (window.scrollY > 10) {
+				setScrolled(true);
+			} else {
+				setScrolled(false);
+			}
+		};
+
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
+	}, []);
 
 	const handleLogout = async () => {
 		const { error } = await supabaseClient.auth.signOut();
@@ -41,166 +45,203 @@ const Navbar = () => {
 		}
 	};
 
+	// Close mobile menu when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			const target = event.target as HTMLElement;
+			if (isMenuOpen && !target.closest('.mobile-menu-container')) {
+				setIsMenuOpen(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [isMenuOpen]);
+
+	// Determine the agent button link based on authentication status
+	const agentLinkHref = user ? '/agent-dashboard' : '/agent-login';
+	const agentLinkText = user ? 'Agent Dashboard' : 'Agent Login';
+
 	return (
-		<div className="py-4 px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-3xl">
-			<div className="relative flex items-center justify-between">
-				<Link
-					href="/"
-					aria-label="Company"
-					title="Company"
-					className="inline-flex items-center">
-					<span className="text-xl font-bold tracking-wide uppercase">
-						LOGO.
-					</span>
-				</Link>
-				{/* Tablet and Desktop Links */}
-				<ul className="hidden md:flex items-center md:gap-4 lg:gap-12">
-					{links.map((link) => (
-						<li key={link.label}>
-							<Link
-								href={link.href}
-								aria-label={link.label}
-								title={link.label}
-								className="text-sm lg:text-base tracking-wide transition-colors duration-200 hover:text-deep-purple-accent-400 whitespace-nowrap">
-								{link.label}
-							</Link>
-						</li>
-					))}
-				</ul>
-				{/* Tablet and Desktop Buttons */}
-				<div className="hidden md:flex items-center md:gap-2 lg:gap-4">
-					{!user ? (
-						<>
-							<Button variant="ghost" className="text-sm lg:text-base py-1 h-auto px-3">
-								<Link href="/sign-in">Sign up</Link>
-							</Button>
-							<Button variant="default" className="text-sm lg:text-base py-1 h-auto px-3">
-								<Link href="/">Get Demo</Link>
-							</Button>
-						</>
-					) : (
-						<>
-							<Button variant="ghost" className="text-sm lg:text-base py-1 h-auto px-3">
-								<Link href="/dashboard">Dashboard</Link>
-							</Button>
-							<Button variant="default" onClick={handleLogout} className="text-sm lg:text-base py-1 h-auto px-3">
-								Logout
-							</Button>
-						</>
-					)}
-				</div>
-				{/* Mobile Menu Button */}
-				<div className="md:hidden">
-					<button
-						aria-label="Open Menu"
-						title="Open Menu"
-						className="p-2 -mr-1 transition duration-200 rounded focus:outline-none focus:shadow-outline hover:bg-deep-purple-50 focus:bg-deep-purple-50"
-						onClick={() => setIsMenuOpen(true)}>
-						<svg className="w-5 text-gray-600" viewBox="0 0 24 24">
-							<path
-								fill="currentColor"
-								d="M23,13H1c-0.6,0-1-0.4-1-1s0.4-1,1-1h22c0.6,0,1,0.4,1,1S23.6,13,23,13z"
-							/>
-							<path
-								fill="currentColor"
-								d="M23,6H1C0.4,6,0,5.6,0,5s0.4-1,1-1h22c0.6,0,1,0.4,1,1S23.6,6,23,6z"
-							/>
-							<path
-								fill="currentColor"
-								d="M23,20H1c-0.6,0-1-0.4-1-1s0.4-1,1-1h22c0.6,0,1,0.4,1,1S23.6,20,23,20z"
-							/>
-						</svg>
-					</button>
-					{isMenuOpen && (
-						<div className="absolute top-0 left-0 w-full z-50">
-							<div className="p-5 bg-white border rounded shadow-sm">
-								<div className="flex items-center justify-between mb-4">
-									<div>
-										<Link
-											href="/"
-											aria-label="Company"
-											title="Company"
-											className="inline-flex items-center">
-											<svg
-												className="w-8 text-deep-purple-accent-400"
-												viewBox="0 0 24 24"
-												strokeLinejoin="round"
-												strokeWidth="2"
-												strokeLinecap="round"
-												strokeMiterlimit="10"
-												stroke="currentColor"
-												fill="none">
-												<rect x="3" y="1" width="7" height="12" />
-												<rect x="3" y="17" width="7" height="6" />
-												<rect x="14" y="1" width="7" height="6" />
-												<rect x="14" y="11" width="7" height="12" />
-											</svg>
-											<span className="ml-2 text-xl font-bold tracking-wide text-gray-800 uppercase">
-												Company
-											</span>
-										</Link>
-									</div>
-									<div>
-										<button
-											aria-label="Close Menu"
-											title="Close Menu"
-											className="p-2 -mt-2 -mr-2 transition duration-200 rounded hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
-											onClick={() => setIsMenuOpen(false)}>
-											<svg className="w-5 text-gray-600" viewBox="0 0 24 24">
-												<path
-													fill="currentColor"
-													d="M19.7,4.3c-0.4-0.4-1-0.4-1.4,0L12,10.6L5.7,4.3c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4l6.3,6.3l-6.3,6.3 c-0.4,0.4-0.4,1,0,1.4C4.5,19.9,4.7,20,5,20s0.5-0.1,0.7-0.3l6.3-6.3l6.3,6.3c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3 c0.4-0.4,0.4-1,0-1.4L13.4,12l6.3-6.3C20.1,5.3,20.1,4.7,19.7,4.3z"
-												/>
-											</svg>
-										</button>
-									</div>
-								</div>
-								<nav>
-									<ul className="space-y-4">
-										<li>
-											<Link
-												href="/"
-												aria-label="Our product"
-												title="Our product"
-												className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-deep-purple-accent-400">
-												Product
-											</Link>
-										</li>
-										<li>
-											<Link
-												href="/"
-												aria-label="Our product"
-												title="Our product"
-												className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-deep-purple-accent-400">
-												Features
-											</Link>
-										</li>
-										<li>
-											<Link
-												href="/"
-												aria-label="Product pricing"
-												title="Product pricing"
-												className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-deep-purple-accent-400">
-												Pricing
-											</Link>
-										</li>
-										<li>
-											<Link
-												href="/"
-												aria-label="About us"
-												title="About us"
-												className="font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-deep-purple-accent-400">
-												About us
-											</Link>
-										</li>
-										<Button variant="default">Sign up</Button>
-									</ul>
-								</nav>
-							</div>
+		<div className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'bg-white shadow-md' : 'bg-white/95'}`}>
+			<div className="container mx-auto px-4">
+				<div className="flex items-center justify-between h-16">
+					{/* Logo */}
+					<Link
+						href="/"
+						aria-label="Company"
+						title="Company"
+						className="flex items-center">
+						<div className="relative h-10 w-10 mr-3 bg-blue-500 rounded-full flex items-center justify-center overflow-hidden">
+							<span className="absolute text-white font-bold text-sm">db</span>
 						</div>
-					)}
+						<div>
+							<h1 className="text-xl font-bold">
+								<span className="text-gray-800">db</span>
+								<span className="text-blue-400">/</span>
+								<span className="text-gray-800">ux</span>
+							</h1>
+							<p className="text-xs text-gray-500">IDX Solution</p>
+						</div>
+					</Link>
+					
+					{/* Desktop Navigation */}
+					<div className="hidden md:flex items-center justify-end flex-1 space-x-4">
+						{/* Navigation Links */}
+						<nav className="hidden md:flex items-center space-x-6 mr-4">
+							{links.map((link) => (
+								<Link
+									key={link.label}
+									href={link.href}
+									aria-label={link.label}
+									title={link.label}
+									className="text-sm font-medium text-gray-700 hover:text-blue-500 transition-colors">
+									{link.label}
+								</Link>
+							))}
+						</nav>
+						
+						{/* Auth Buttons */}
+						{!user ? (
+							<div className="flex items-center space-x-2">
+								<Button variant="ghost" className="text-sm py-1 h-auto px-3">
+									<Link href="/login">Sign in</Link>
+								</Button>
+								<Button variant="default" className="text-sm py-1 h-auto px-3">
+									<Link href="/signup">Sign up</Link>
+								</Button>
+								<Button 
+									variant="outline" 
+									className="text-sm py-1 h-auto px-3 flex items-center gap-1"
+								>
+									<Building className="h-4 w-4" />
+									<Link href={agentLinkHref}>{agentLinkText}</Link>
+								</Button>
+							</div>
+						) : (
+							<div className="flex items-center space-x-2">
+								<Button variant="ghost" className="text-sm py-1 h-auto px-3">
+									<Link href="/dashboard">Dashboard</Link>
+								</Button>
+								<Button 
+									variant="outline" 
+									className="text-sm py-1 h-auto px-3 flex items-center gap-1"
+								>
+									<Building className="h-4 w-4" />
+									<Link href={agentLinkHref}>{agentLinkText}</Link>
+								</Button>
+								<Button variant="default" onClick={handleLogout} className="text-sm py-1 h-auto px-3">
+									Logout
+								</Button>
+							</div>
+						)}
+					</div>
+					
+					{/* Mobile Menu Button */}
+					<div className="md:hidden">
+						<button
+							aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
+							title={isMenuOpen ? "Close Menu" : "Open Menu"}
+							className="p-2 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+							onClick={() => setIsMenuOpen(!isMenuOpen)}>
+							{isMenuOpen ? (
+								<X className="w-5 h-5 text-gray-600" />
+							) : (
+								<Menu className="w-5 h-5 text-gray-600" />
+							)}
+						</button>
+					</div>
 				</div>
 			</div>
+			
+			{/* Mobile Menu - Slide down animation */}
+			{isMenuOpen && (
+				<div className="md:hidden fixed top-16 left-0 right-0 z-50 mobile-menu-container">
+					<div className="bg-white border-t border-gray-200 shadow-lg animate-in slide-in-from-top duration-300">
+						<div className="container mx-auto px-4 py-3">
+							<nav>
+								<ul className="space-y-3 pb-3">
+									{links.map((link) => (
+										<li key={link.label}>
+											<Link
+												href={link.href}
+												aria-label={link.label}
+												title={link.label}
+												className="block py-2 px-3 rounded-md hover:bg-gray-50 font-medium text-gray-700 transition-colors duration-200">
+												{link.label}
+											</Link>
+										</li>
+									))}
+									<li className="border-t border-gray-100 pt-3 mt-3">
+										<p className="text-xs text-gray-500 uppercase tracking-wider px-3 mb-2">Account</p>
+									</li>
+									{!user ? (
+										<>
+											<li>
+												<Link 
+													href="/login"
+													className="flex items-center py-2 px-3 rounded-md hover:bg-gray-50 text-gray-700 font-medium"
+												>
+													<UserIcon className="h-4 w-4 mr-2 text-gray-500" />
+													Sign in
+												</Link>
+											</li>
+											<li>
+												<Link 
+													href="/signup"
+													className="flex items-center py-2 px-3 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium"
+												>
+													<UserIcon className="h-4 w-4 mr-2 text-blue-500" />
+													Sign up
+												</Link>
+											</li>
+											<li>
+												<Link 
+													href={agentLinkHref}
+													className="flex items-center py-2 px-3 rounded-md hover:bg-gray-50 text-gray-700 font-medium"
+												>
+													<Building className="h-4 w-4 mr-2 text-gray-500" />
+													{agentLinkText}
+												</Link>
+											</li>
+										</>
+									) : (
+										<>
+											<li>
+												<Link 
+													href="/dashboard"
+													className="flex items-center py-2 px-3 rounded-md hover:bg-gray-50 text-gray-700 font-medium"
+												>
+													<UserIcon className="h-4 w-4 mr-2 text-gray-500" />
+													Dashboard
+												</Link>
+											</li>
+											<li>
+												<Link 
+													href={agentLinkHref}
+													className="flex items-center py-2 px-3 rounded-md hover:bg-gray-50 text-gray-700 font-medium"
+												>
+													<Building className="h-4 w-4 mr-2 text-gray-500" />
+													{agentLinkText}
+												</Link>
+											</li>
+											<li>
+												<button 
+													onClick={handleLogout}
+													className="flex w-full items-center py-2 px-3 rounded-md hover:bg-red-50 text-red-600 font-medium"
+												>
+													<X className="h-4 w-4 mr-2 text-red-500" />
+													Logout
+												</button>
+											</li>
+										</>
+									)}
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

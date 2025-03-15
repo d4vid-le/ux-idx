@@ -2,7 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Property } from '@/types/property';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils/formatting';
+import { Heart } from 'lucide-react';
+import { Badge } from '../ui/badge';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface PropertyCardProps {
   property: Property;
@@ -11,6 +14,39 @@ interface PropertyCardProps {
 const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const { id, title, address, price, photos, bedrooms, bathrooms, squareFeet, propertyType, status } = property;
   
+  // Default image if photos array is empty or undefined
+  const defaultImage = '/images/property-placeholder.jpg';
+  const imageUrl = photos && photos.length > 0 ? photos[0] : defaultImage;
+  
+  // Format square feet with fallback
+  const formattedSquareFeet = squareFeet ? squareFeet.toLocaleString() : 'N/A';
+  
+  // Use our custom favorites hook
+  const { isFavorite, toggleFavorite } = useFavorites();
+  
+  // Toggle favorite status on heart click
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation from Link component
+    toggleFavorite(id);
+  };
+
+  // Format price with commas
+  const formattedPrice = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(price);
+
+  // Status color mapping
+  const statusColorMap = {
+    'For Sale': 'bg-green-100 text-green-800',
+    'For Rent': 'bg-blue-100 text-blue-800',
+    'Sold': 'bg-red-100 text-red-800',
+    'Pending': 'bg-orange-100 text-orange-800'
+  };
+  
+  const statusColor = statusColorMap[status] || 'bg-gray-100 text-gray-800';
+
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-full flex flex-col w-full">
       {/* Property Image - Fixed aspect ratio */}
@@ -18,7 +54,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         <Link href={`/properties/${id}`}>
           <div className="absolute inset-0">
             <Image
-              src={photos[0]}
+              src={imageUrl}
               alt={`Photo of ${title}`}
               fill
               className="object-cover"
@@ -39,9 +75,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           className="absolute top-3 right-3 bg-white/80 hover:bg-white p-1.5 rounded-full text-rose-500 hover:text-rose-600"
           aria-label="Add to favorites"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-          </svg>
+          <Heart 
+            className={`h-5 w-5 ${isFavorite(id) ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+          />
         </button>
       </div>
       
@@ -59,7 +95,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         </div>
         
         <div className="mb-3">
-          <span className="text-xl font-bold text-gray-900">{formatPrice(price)}</span>
+          <span className="text-xl font-bold text-gray-900">{formattedPrice}</span>
         </div>
         
         {/* Property Features */}
@@ -80,7 +116,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
             </svg>
-            <span>{squareFeet.toLocaleString()} sqft</span>
+            <span>{formattedSquareFeet} sqft</span>
           </div>
         </div>
       </div>

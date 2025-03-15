@@ -6,9 +6,7 @@ import Image from 'next/image';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { UserIcon } from '@heroicons/react/24/outline';
-
-// Define search types
-type SearchType = 'buy' | 'rent' | 'sell';
+import { useUser } from "@/hooks/useUser";
 
 // Popular locations for suggestions
 const POPULAR_LOCATIONS = [
@@ -43,9 +41,6 @@ interface LocationSuggestion {
 
 const IDXHeader: React.FC = () => {
   const router = useRouter();
-  
-  // Track the active search type
-  const [activeSearchType, setActiveSearchType] = useState<SearchType>('buy');
   
   const [searchParams, setSearchParams] = useState({
     location: '',
@@ -188,19 +183,6 @@ const IDXHeader: React.FC = () => {
     localStorage.setItem('recentSearches', JSON.stringify(updatedRecentSearches));
   };
 
-  const handleSearchTypeChange = (type: SearchType) => {
-    setActiveSearchType(type);
-    // Reset or adjust form fields as needed when switching search types
-    if (type === 'sell') {
-      // Different fields might be relevant for selling
-      setSearchParams(prev => ({
-        ...prev,
-        propertyType: '',
-        priceRange: '',
-      }));
-    }
-  };
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -217,10 +199,6 @@ const IDXHeader: React.FC = () => {
       searchQuery.append('radius', searchParams.radius);
     }
     
-    if (activeSearchType) {
-      searchQuery.append('type', activeSearchType);
-    }
-    
     // Additional parameters for advanced search
     if (searchParams.minBeds) searchQuery.append('beds_min', searchParams.minBeds);
     if (searchParams.minBaths) searchQuery.append('baths_min', searchParams.minBaths);
@@ -229,16 +207,6 @@ const IDXHeader: React.FC = () => {
     
     // Navigate to search results page
     router.push(`/search?${searchQuery.toString()}`);
-  };
-
-  // Get placeholder text based on active search type
-  const getLocationPlaceholder = () => {
-    switch (activeSearchType) {
-      case 'rent': return 'Where do you want to rent?';
-      case 'buy': return 'Where do you want to buy?';
-      case 'sell': return 'Where is your property located?';
-      default: return 'City, Neighborhood, or ZIP';
-    }
   };
 
   // Toggle auth dropdown
@@ -322,88 +290,6 @@ const IDXHeader: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-black/60" />
       </div>
 
-      {/* Navbar */}
-      <nav className="relative z-20 py-4 border-b border-white/20">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
-            {/* Logo */}
-            <div className="flex items-center">
-              <div className="relative h-10 w-10 mr-3 bg-blue-500 rounded-full flex items-center justify-center overflow-hidden">
-                <span className="absolute text-white font-bold text-sm">db</span>
-              </div>
-              <h1 className="text-2xl font-bold">
-                <span className="text-white">db</span>
-                <span className="text-blue-400">/</span>
-                <span className="text-white">ux</span>
-                <span className="ml-2 text-sm font-normal tracking-wider text-blue-200">IDX Solution</span>
-              </h1>
-            </div>
-
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-1 lg:space-x-4">
-              <Link href="/" className="px-2 lg:px-3 py-2 text-white hover:text-blue-300 font-medium whitespace-nowrap text-sm lg:text-base">Home</Link>
-              <Link href="/search" className="px-2 lg:px-3 py-2 text-white hover:text-blue-300 font-medium whitespace-nowrap text-sm lg:text-base">Properties</Link>
-              <Link href="/agents" className="px-2 lg:px-3 py-2 text-white hover:text-blue-300 font-medium whitespace-nowrap text-sm lg:text-base">Agents</Link>
-              <Link href="/about" className="px-2 lg:px-3 py-2 text-white hover:text-blue-300 font-medium whitespace-nowrap text-sm lg:text-base">About</Link>
-              <Link href="/contact" className="px-2 lg:px-3 py-2 text-white hover:text-blue-300 font-medium whitespace-nowrap text-sm lg:text-base">Contact</Link>
-            </div>
-
-            {/* Auth Buttons - ONLY for large screens, not tablet */}
-            <div className="hidden lg:flex items-center space-x-3">
-              <Link 
-                href="/login" 
-                className="flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 ease-in-out"
-              >
-                <UserIcon className="h-5 w-5 mr-2 text-gray-800" />
-                <span>Login</span>
-              </Link>
-              <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white h-auto py-2 px-4">
-                <Link href="/signup">Sign up</Link>
-              </Button>
-            </div>
-            
-            {/* Mobile/Tablet Menu Button */}
-            <button 
-              className="lg:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-          
-          {/* Mobile and Tablet Menu */}
-          {mobileMenuOpen && (
-            <div className="lg:hidden mt-3 py-3 border-t border-white/10">
-              <Link href="/" className="block py-2 text-white hover:text-blue-300">Home</Link>
-              <Link href="/search" className="block py-2 text-white hover:text-blue-300">Properties</Link>
-              <Link href="/agents" className="block py-2 text-white hover:text-blue-300">Agents</Link>
-              <Link href="/about" className="block py-2 text-white hover:text-blue-300">About</Link>
-              <Link href="/contact" className="block py-2 text-white hover:text-blue-300">Contact</Link>
-              
-              {/* Auth links with appropriate width for mobile and tablet */}
-              <div className="border-t border-white/10 mt-3 pt-3">
-                <h3 className="text-white font-semibold mb-2">Account</h3>
-                <div className="flex flex-wrap gap-3">
-                  <Link 
-                    href="/login" 
-                    className="flex items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 ease-in-out w-auto"
-                  >
-                    <UserIcon className="h-5 w-5 mr-2 text-gray-800" />
-                    <span>Login</span>
-                  </Link>
-                  <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white w-auto px-5">
-                    <Link href="/signup">Sign up</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
-
       {/* Content */}
       <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
         {/* Hero text content */}
@@ -416,42 +302,6 @@ const IDXHeader: React.FC = () => {
 
         {/* Search form */}
         <div className="bg-white rounded-lg shadow-lg max-w-3xl mx-auto overflow-hidden">
-          {/* Search Tabs - Aligned to the left */}
-          <div className="flex justify-start border-b">
-            <div className="flex w-full md:w-1/2">
-              <button
-                className={`py-2 px-6 text-base font-medium flex-1 ${
-                  activeSearchType === 'buy'
-                    ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-                onClick={() => handleSearchTypeChange('buy')}
-              >
-                Buy
-              </button>
-              <button
-                className={`py-2 px-6 text-base font-medium flex-1 ${
-                  activeSearchType === 'rent'
-                    ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-                onClick={() => handleSearchTypeChange('rent')}
-              >
-                Rent
-              </button>
-              <button
-                className={`py-2 px-6 text-base font-medium flex-1 ${
-                  activeSearchType === 'sell'
-                    ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-                onClick={() => handleSearchTypeChange('sell')}
-              >
-                Sell
-              </button>
-            </div>
-          </div>
-
           {/* Search Form Content */}
           <div className="px-4 py-4">
             <form onSubmit={handleSearch}>
@@ -469,7 +319,7 @@ const IDXHeader: React.FC = () => {
                       ref={inputRef}
                       type="text" 
                       name="location"
-                      placeholder={getLocationPlaceholder()}
+                      placeholder="City, Neighborhood, or ZIP"
                       className="w-full p-3 pl-10 pr-28 rounded-md border border-gray-300 focus:ring focus:ring-blue-500 focus:border-blue-500 text-gray-900"
                       value={searchParams.location}
                       onChange={handleInputChange}
@@ -498,7 +348,7 @@ const IDXHeader: React.FC = () => {
                     <button 
                       type="submit"
                       className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center transition-all duration-200 shadow-sm hover:shadow-md"
-                      aria-label={activeSearchType === 'sell' ? 'Get Home Value' : 'Search Properties'}
+                      aria-label="Search Properties"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />

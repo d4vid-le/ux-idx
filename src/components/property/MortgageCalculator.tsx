@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, memo } from 'react';
 import { DollarSign, Percent, Calendar, BarChart2, RefreshCw, ArrowRight, HelpCircle, Printer } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils/formatting';
 
 interface MortgageCalculatorProps {
   propertyPrice: number;

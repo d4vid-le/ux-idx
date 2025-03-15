@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { X, Mail, Phone, Calendar, ArrowRight, Shield } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils/formatting';
 import Image from 'next/image';
 
 interface PropertyInquiryModalProps {

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Share2, Calendar, MapPin, Phone, Mail, Info, FileText, Home, DollarSign, Printer, Grid, Heart } from 'lucide-react';
 import { mockProperties } from '@/data/mockProperties';
 import { Property } from '@/types/property';
-import { formatPrice, formatDate } from '@/lib/utils';
+import { formatPrice, formatDate } from '@/lib/utils/formatting';
 import PhotoGallery from '@/components/property/PhotoGallery';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import PropertyFeatures from '@/components/property/PropertyFeatures';

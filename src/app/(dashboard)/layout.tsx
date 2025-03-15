@@ -15,7 +15,7 @@ export default function DashboardLayout({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   
-  // Check if local storage has a user before rendering
+  // Check if user is authenticated
   useEffect(() => {
     const checkAuth = () => {
       console.log("Dashboard: Checking authentication");
@@ -24,7 +24,16 @@ export default function DashboardLayout({
       
       if (!storedUser && !loading) {
         console.log("Dashboard: No stored user, redirecting to login");
-        router.push('/login');
+        
+        // Check if we're on the agent dashboard path
+        const isAgentPath = window.location.pathname.includes('agent-dashboard');
+        
+        // Redirect to the appropriate login page
+        if (isAgentPath) {
+          router.push('/agent-login');
+        } else {
+          router.push('/login');
+        }
       } else {
         console.log("Dashboard: User found or still loading");
       }
@@ -42,7 +51,16 @@ export default function DashboardLayout({
   useEffect(() => {
     if (!loading && !user) {
       console.log("Dashboard: Auth context shows no user, redirecting to login");
-      router.push('/login');
+      
+      // Check if we're on the agent dashboard path
+      const isAgentPath = window.location.pathname.includes('agent-dashboard');
+      
+      // Redirect to the appropriate login page
+      if (isAgentPath) {
+        router.push('/agent-login');
+      } else {
+        router.push('/login');
+      }
     }
   }, [loading, user, router]);
 

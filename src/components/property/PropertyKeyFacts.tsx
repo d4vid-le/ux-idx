@@ -1,6 +1,6 @@
 'use client';
 
-import { formatPrice } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils/formatting';
 import { Bed, Bath, Square, Home, Calendar, DollarSign } from 'lucide-react';
 
 interface PropertyKeyFactsProps {

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, Bed, Bath, Square, Heart } from 'lucide-react';
 import { Property } from '@/types/property';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils/formatting';
 
 interface SimilarPropertiesProps {
   properties: Property[];
