@@ -30,17 +30,7 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({ properties }) =
           {properties.map(property => (
             <div key={property.id} className="w-full flex justify-center">
               <div className="w-full min-w-[280px] max-w-[400px]">
-                <PropertyCard 
-                  id={property.id}
-                  title={property.title}
-                  address={property.address}
-                  price={property.price}
-                  bedrooms={property.bedrooms}
-                  bathrooms={property.bathrooms}
-                  sqft={property.squareFeet || 0}
-                  imageUrl={property.photos?.[0] || '/images/property-placeholder.jpg'}
-                  status={property.status}
-                />
+                <PropertyCard property={property} />
               </div>
             </div>
           ))}

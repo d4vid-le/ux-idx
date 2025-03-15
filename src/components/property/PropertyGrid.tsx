@@ -56,15 +56,7 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ properties }) => {
         {sortedProperties.map((property) => (
           <PropertyCard
             key={property.id}
-            id={property.id}
-            title={property.title}
-            address={property.address}
-            price={property.price}
-            bedrooms={property.bedrooms}
-            bathrooms={property.bathrooms}
-            sqft={property.squareFeet || 0}
-            imageUrl={property.photos?.[0] || '/images/property-placeholder.jpg'}
-            status={property.status}
+            property={property}
           />
         ))}
       </div>

@@ -94,7 +94,7 @@ export function formatAddress(address: string, maxLength: number = 50): string {
  * @returns Formatted payment with dollar sign and decimal
  */
 export function formatMonthlyPayment(payment: number): string {
-  return formatPrice(payment, true) + '/mo';
+  return formatPrice(payment, 'en-US') + '/mo';
 }
 
 /**
