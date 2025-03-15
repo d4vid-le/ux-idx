@@ -42,8 +42,19 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would update the URL with the search params
-    console.log('Search submitted:', searchTerm);
+    
+    // Create new URLSearchParams instance 
+    const params = new URLSearchParams(searchParams ? searchParams.toString() : '');
+    
+    // Add or update the search query parameter
+    if (searchTerm.trim()) {
+      params.set('q', searchTerm.trim());
+    } else {
+      params.delete('q');
+    }
+    
+    // Navigate to the search page with the updated params
+    router.push(`/search?${params.toString()}`);
   };
 
   const handleFilterSelect = (filterType: string, value: string) => {
@@ -89,19 +100,25 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
         <div className="container mx-auto px-4 py-2">
           {/* Integrated search bar and filters on one line */}
           <div className="flex flex-wrap items-center gap-2">
-            {/* Search Bar - Smaller and inline */}
-            <div className="relative w-64 md:w-72">
-              <form onSubmit={handleSearchSubmit} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                  <Search size={16} className="text-gray-500" />
-                </div>
+            {/* Search Bar - Enhanced with modern design */}
+            <div className="relative w-64 md:w-80">
+              <form onSubmit={handleSearchSubmit} className="relative group">
                 <input
                   type="text"
                   placeholder="Address, City, ZIP"
-                  className="pl-8 pr-2 py-2 w-full border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="pl-3 pr-12 py-2.5 w-full border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-200 group-hover:border-gray-400"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  aria-label="Search for properties by address, city, or ZIP"
                 />
+                <button 
+                  type="submit"
+                  className="absolute inset-y-0 right-0 flex items-center justify-center px-3 mr-0.5 my-0.5 rounded-r-md text-gray-500 hover:text-white hover:bg-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                  aria-label="Search properties"
+                  title="Search properties"
+                >
+                  <Search size={18} />
+                </button>
               </form>
             </div>
 
