@@ -1,6 +1,8 @@
+'use client';
+
 import { useState } from 'react';
-import PropertyCard from '../PropertyCard';
-import { Property } from '../../../types/property';
+import { Property } from '@/types/property';
+import { PropertyCard } from './index';
 
 interface PropertyGridProps {
   properties: Property[];
@@ -21,7 +23,7 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ properties }) => {
       case 'beds-desc':
         return b.bedrooms - a.bedrooms;
       case 'sqft-desc':
-        return (b.squareFeet || 0) - (a.squareFeet || 0); // Use squareFeet instead of sqft
+        return (b.squareFeet || 0) - (a.squareFeet || 0);
       default:
         return 0;
     }
@@ -54,7 +56,15 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({ properties }) => {
         {sortedProperties.map((property) => (
           <PropertyCard
             key={property.id}
-            property={property}
+            id={property.id}
+            title={property.title}
+            address={property.address}
+            price={property.price}
+            bedrooms={property.bedrooms}
+            bathrooms={property.bathrooms}
+            sqft={property.squareFeet || 0}
+            imageUrl={property.photos?.[0] || '/images/property-placeholder.jpg'}
+            status={property.status}
           />
         ))}
       </div>

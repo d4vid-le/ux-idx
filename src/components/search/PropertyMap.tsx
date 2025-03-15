@@ -10,12 +10,16 @@ interface PropertyMapProps {
   properties: Property[];
   selectedProperty: Property | null;
   onPropertySelect: (property: Property) => void;
+  centerCoordinates?: { lat: number; lng: number };
+  searchRadius?: number;
 }
 
 const PropertyMap: React.FC<PropertyMapProps> = ({
   properties,
   selectedProperty,
-  onPropertySelect
+  onPropertySelect,
+  centerCoordinates,
+  searchRadius
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);

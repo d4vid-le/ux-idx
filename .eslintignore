@@ -1,0 +1,15 @@
+# Build output
+.next/
+out/
+
+# Node modules
+node_modules/
+
+# Test files
+**/__tests__/**
+
+# Public assets
+public/
+
+# Cache
+.vercel/ 

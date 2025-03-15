@@ -12,6 +12,7 @@ interface PropertyListingsProps {
   onPropertySelect: (property: Property) => void;
   selectedProperty: Property | null;
   showMap?: boolean;
+  showDistance?: boolean;
 }
 
 const PropertyListings: React.FC<PropertyListingsProps> = ({
@@ -19,7 +20,8 @@ const PropertyListings: React.FC<PropertyListingsProps> = ({
   loading,
   onPropertySelect,
   selectedProperty,
-  showMap = true
+  showMap = true,
+  showDistance = false
 }) => {
   // Track favorite properties
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});

@@ -24,7 +24,7 @@ export default function NotificationsPage() {
     const fetchNotifications = async () => {
       try {
         // Mock data for demonstration
-        const mockNotifications = [
+        const mockNotifications: Notification[] = [
           {
             id: 1,
             message: 'Price drop on Luxury Condo with Ocean View - Now $1,125,000',

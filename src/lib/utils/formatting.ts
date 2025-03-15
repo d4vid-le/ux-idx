@@ -3,87 +3,89 @@
  */
 
 /**
- * Format a price in USD
- * @param price - The price to format
- * @param includeDecimal - Whether to include decimal places
- * @returns Formatted price string with dollar sign
+ * Formats a number as a price string with currency symbol
+ * @param price Number to format as price
+ * @param locale Locale for formatting (default: 'en-US')
+ * @param currency Currency code (default: 'USD')
+ * @returns Formatted price string
  */
-export function formatPrice(price: number, includeDecimal: boolean = false): string {
-  const formatter = new Intl.NumberFormat('en-US', {
+export function formatPrice(price: number, locale: string = 'en-US', currency: string = 'USD'): string {
+  return new Intl.NumberFormat(locale, {
     style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: includeDecimal ? 2 : 0,
-    maximumFractionDigits: includeDecimal ? 2 : 0,
-  });
-
-  return formatter.format(price);
+    currency,
+    maximumFractionDigits: 0,
+  }).format(price);
 }
 
 /**
- * Format a date in the user's locale
- * @param date - The date to format (Date object or ISO string)
- * @param options - Intl.DateTimeFormatOptions
+ * Formats a date string in a human-readable format
+ * @param dateString Date string in ISO format (YYYY-MM-DD)
+ * @param locale Locale for formatting (default: 'en-US')
  * @returns Formatted date string
  */
-export function formatDate(
-  date: Date | string,
-  options: Intl.DateTimeFormatOptions = { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  }
-): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
-  return new Intl.DateTimeFormat('en-US', options).format(dateObj);
+export function formatDate(dateString: string, locale: string = 'en-US'): string {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
 }
 
 /**
- * Format a number with commas
- * @param num - The number to format
- * @returns Formatted number with commas
+ * Formats a number with commas for thousands
+ * @param num Number to format
+ * @returns Formatted number string
  */
 export function formatNumber(num: number): string {
   return num.toLocaleString('en-US');
 }
 
 /**
- * Format square footage
- * @param sqft - The square footage to format
- * @returns Formatted square footage with commas and "sq ft" suffix
- */
-export function formatSquareFeet(sqft: number): string {
-  return `${formatNumber(sqft)} sq ft`;
-}
-
-/**
- * Format a short address (without zip code or state)
- * @param address - The full address
- * @returns Shortened address
- */
-export function formatShortAddress(address: string): string {
-  // Attempts to remove zip code and state abbreviation
-  return address.replace(/,\s*[A-Z]{2}\s*\d{5}(-\d{4})?$/, '');
-}
-
-/**
- * Format a phone number as (XXX) XXX-XXXX
- * @param phone - The phone number (can contain non-numeric characters)
+ * Formats a phone number in a standard format
+ * @param phone Phone number string
  * @returns Formatted phone number
  */
 export function formatPhoneNumber(phone: string): string {
   // Remove all non-numeric characters
-  const digits = phone.replace(/\D/g, '');
+  const cleaned = phone.replace(/\D/g, '');
   
-  // Format based on the number of digits
-  if (digits.length === 10) {
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-  } else if (digits.length === 11 && digits[0] === '1') {
-    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+  // Check if the input is of correct length
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+  
+  if (match) {
+    return '(' + match[1] + ') ' + match[2] + '-' + match[3];
   }
   
-  // Return original if not formattable
   return phone;
+}
+
+/**
+ * Formats square footage with commas and "sq ft" suffix
+ * @param sqft Square footage number
+ * @returns Formatted square footage string
+ */
+export function formatSquareFeet(sqft: number): string {
+  return `${sqft.toLocaleString()} sq ft`;
+}
+
+/**
+ * Formats an address for display
+ * @param address Full address string
+ * @param maxLength Maximum length before truncating
+ * @returns Formatted address
+ */
+export function formatAddress(address: string, maxLength: number = 50): string {
+  if (address.length <= maxLength) return address;
+  
+  // Try to find a good breaking point (after a comma)
+  const commaIndex = address.indexOf(',');
+  if (commaIndex > 0 && commaIndex < maxLength) {
+    return address.substring(0, commaIndex + 1) + '...';
+  }
+  
+  // Otherwise just truncate
+  return address.substring(0, maxLength) + '...';
 }
 
 /**
