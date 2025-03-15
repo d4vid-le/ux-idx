@@ -18,11 +18,11 @@ export function isValidEmail(email: string): boolean {
  * @returns Boolean indicating if the phone number is valid
  */
 export function isValidPhone(phone: string): boolean {
-  // Remove non-numeric characters for validation
-  const digits = phone.replace(/\D/g, '');
+  // Remove all non-numeric characters
+  const cleaned = phone.replace(/\D/g, '');
   
-  // Check if the number of digits is valid for US numbers
-  return digits.length === 10 || (digits.length === 11 && digits[0] === '1');
+  // Check if the cleaned number is 10 digits (US format)
+  return cleaned.length === 10;
 }
 
 /**
@@ -62,31 +62,53 @@ export function isValidUrl(url: string): boolean {
 }
 
 /**
- * Check if a password meets strength requirements
- * @param password - The password to validate
- * @returns Object with validation result and reason if invalid
+ * Password validation result interface
  */
-export function validatePassword(password: string): { valid: boolean; reason?: string } {
+export interface PasswordValidationResult {
+  valid: boolean;
+  reason?: string;
+}
+
+/**
+ * Validates password strength
+ * @param password Password to validate
+ * @returns Validation result with valid flag and optional reason
+ */
+export function validatePassword(password: string): PasswordValidationResult {
+  if (!password) {
+    return {
+      valid: false,
+      reason: 'Password is required'
+    };
+  }
+
   if (password.length < 8) {
-    return { valid: false, reason: 'Password must be at least 8 characters long' };
+    return {
+      valid: false,
+      reason: 'Password must be at least 8 characters long'
+    };
   }
-  
-  if (!/[A-Z]/.test(password)) {
-    return { valid: false, reason: 'Password must contain at least one uppercase letter' };
+
+  // Check for complexity requirements
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumbers = /[0-9]/.test(password);
+  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+  if (!(hasUpperCase && hasLowerCase && hasNumbers)) {
+    return {
+      valid: false,
+      reason: 'Password must contain uppercase, lowercase, and numbers'
+    };
   }
-  
-  if (!/[a-z]/.test(password)) {
-    return { valid: false, reason: 'Password must contain at least one lowercase letter' };
+
+  if (!hasSpecialChar) {
+    return {
+      valid: false,
+      reason: 'Password should include at least one special character'
+    };
   }
-  
-  if (!/[0-9]/.test(password)) {
-    return { valid: false, reason: 'Password must contain at least one number' };
-  }
-  
-  if (!/[^A-Za-z0-9]/.test(password)) {
-    return { valid: false, reason: 'Password must contain at least one special character' };
-  }
-  
+
   return { valid: true };
 }
 

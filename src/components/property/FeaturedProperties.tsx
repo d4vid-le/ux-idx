@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import PropertyCard from './property/PropertyCard';
 import { Property } from '@/types/property';
+import { PropertyCard } from './index';
 
 interface FeaturedPropertiesProps {
   properties: Property[];
@@ -30,7 +30,17 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({ properties }) =
           {properties.map(property => (
             <div key={property.id} className="w-full flex justify-center">
               <div className="w-full min-w-[280px] max-w-[400px]">
-                <PropertyCard property={property} />
+                <PropertyCard 
+                  id={property.id}
+                  title={property.title}
+                  address={property.address}
+                  price={property.price}
+                  bedrooms={property.bedrooms}
+                  bathrooms={property.bathrooms}
+                  sqft={property.squareFeet || 0}
+                  imageUrl={property.photos?.[0] || '/images/property-placeholder.jpg'}
+                  status={property.status}
+                />
               </div>
             </div>
           ))}

@@ -45,12 +45,14 @@ export default function SearchPage() {
         const queryParams = new URLSearchParams();
         
         // Add all search params to the query
-        for (const [key, value] of Array.from(searchParams.entries())) {
-          queryParams.append(key, value);
+        if (searchParams) {
+          for (const [key, value] of Array.from(searchParams.entries())) {
+            queryParams.append(key, value);
+          }
         }
         
         // Default sort by newest if not specified
-        if (!searchParams.get('sort')) {
+        if (!searchParams?.get('sort')) {
           queryParams.append('sort', sortOption);
         }
         

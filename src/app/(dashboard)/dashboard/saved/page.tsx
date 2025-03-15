@@ -15,7 +15,7 @@ export default function SavedPropertiesPage() {
     const fetchSavedProperties = async () => {
       try {
         // Mock data for demonstration
-        const mockSavedProperties = [
+        const mockSavedProperties: Property[] = [
           {
             id: '1',
             title: 'Luxury Condo in Manhattan',
@@ -28,6 +28,10 @@ export default function SavedPropertiesPage() {
             status: 'For Sale',
             imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267',
             createdAt: new Date().toISOString(),
+            location: {
+              lat: 40.7128,
+              lng: -74.0060
+            }
           },
           {
             id: '2',
@@ -41,6 +45,10 @@ export default function SavedPropertiesPage() {
             status: 'For Sale',
             imageUrl: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb',
             createdAt: new Date().toISOString(),
+            location: {
+              lat: 40.7580,
+              lng: -73.9855
+            }
           },
           {
             id: '3',
@@ -54,6 +62,10 @@ export default function SavedPropertiesPage() {
             status: 'For Sale',
             imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c',
             createdAt: new Date().toISOString(),
+            location: {
+              lat: 40.6935,
+              lng: -73.9917
+            }
           },
         ];
         

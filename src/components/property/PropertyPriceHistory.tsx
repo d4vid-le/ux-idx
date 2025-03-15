@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { formatPrice, formatDate } from '@/lib/utils';
+import { formatPrice, formatDate } from '@/lib/utils/formatting';
 import { TrendingUp, TrendingDown, DollarSign, Calendar, Info, ArrowRight, BarChart3 } from 'lucide-react';
 
 interface PriceHistoryItem {
