@@ -23,6 +23,9 @@ const DashboardSidebar = () => {
   const { signOut } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   
+  // Check if we're on the agent dashboard path
+  const isAgentDashboard = pathname?.includes('agent-dashboard');
+  
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
@@ -36,7 +39,8 @@ const DashboardSidebar = () => {
     }
   };
 
-  const navigationItems = [
+  // Define navigation items based on dashboard type
+  const userNavigationItems = [
     { name: 'Dashboard', icon: Home, path: '/dashboard' },
     { name: 'Profile', icon: User, path: '/dashboard/profile' },
     { name: 'Saved Properties', icon: Heart, path: '/dashboard/saved' },
@@ -44,6 +48,16 @@ const DashboardSidebar = () => {
     { name: 'Notifications', icon: Bell, path: '/dashboard/notifications' },
     { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
   ];
+
+  const agentNavigationItems = [
+    { name: 'Dashboard', icon: Home, path: '/agent-dashboard' },
+    { name: 'Profile', icon: User, path: '/agent-dashboard/profile' },
+    { name: 'Notifications', icon: Bell, path: '/agent-dashboard/notifications' },
+    { name: 'Settings', icon: Settings, path: '/agent-dashboard/settings' },
+  ];
+
+  // Select the appropriate navigation items based on dashboard type
+  const navigationItems = isAgentDashboard ? agentNavigationItems : userNavigationItems;
 
   return (
     <>
@@ -66,7 +80,9 @@ const DashboardSidebar = () => {
         {/* Logo */}
         <div className="flex items-center px-4 mb-6">
           <Link href="/" className="flex items-center">
-            <span className="text-xl font-bold text-blue-600">User Dashboard</span>
+            <span className="text-xl font-bold text-blue-600">
+              {isAgentDashboard ? 'Agent Dashboard' : 'User Dashboard'}
+            </span>
           </Link>
           <button
             onClick={toggleSidebar}
