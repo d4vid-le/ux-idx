@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuthContext } from '@/providers/AuthProvider';
+import ScheduledViewings from '@/components/dashboard/ScheduledViewings';
 
 const AgentDashboard = () => {
   const router = useRouter();
@@ -18,6 +19,7 @@ const AgentDashboard = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState(5);
   const [newLeads, setNewLeads] = useState(8);
   const [isAgent, setIsAgent] = useState(false);
+  const [agentId, setAgentId] = useState('agent-1'); // For demo purposes
 
   useEffect(() => {
     // Redirect if not logged in
@@ -221,6 +223,20 @@ const AgentDashboard = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Property Viewing Requests */}
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+                Property Viewing Requests
+              </CardTitle>
+              <CardDescription>Manage your scheduled property viewings</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScheduledViewings userType="agent" agentId={agentId} />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Right Column */}
@@ -295,4 +311,4 @@ const AgentDashboard = () => {
   );
 };
 
-export default AgentDashboard; 
+export default AgentDashboard;

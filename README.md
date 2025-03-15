@@ -15,6 +15,7 @@ This repository contains the user interface components and dashboard features fo
 - **Profile Management**: Personal info, security settings, and notification preferences
 - **Activity Tracking**: Monitor login history and account activity
 - **Property Search**: Advanced filtering and results display
+- **Schedule Property Viewings**: Allow users to schedule property tours with agents
 
 ## 🛠️ Tech Stack
 
@@ -24,6 +25,7 @@ This repository contains the user interface components and dashboard features fo
 - **State Management**: React hooks and context
 - **Authentication**: JWT with Supabase Auth
 - **API**: Next.js API routes
+- **Data Storage**: LocalStorage (demo), API endpoints (production)
 
 ## 🚀 Getting Started
 
@@ -58,3 +60,50 @@ This project is actively under development as part of the IDX Real Estate Soluti
 ## 📝 License
 
 [MIT](LICENSE)
+
+## 📚 Feature Documentation
+
+### Schedule a Viewing Feature
+
+#### Data Flow & Management
+
+The Schedule a Viewing feature allows users to request property tours with real estate agents. Here's how the data is managed throughout the application:
+
+1. **Data Storage**:
+   - In the demo/development environment, scheduled viewings are stored in `localStorage` with the following structure:
+     - User viewings: Stored in `propertyViewings` key as an array of viewing objects
+     - Agent viewings: Stored in `agentViewings` key as an object where keys are agent IDs and values are arrays of viewing objects
+
+2. **Data Structure**:
+   ```typescript
+   interface Viewing {
+     id: string;                           // Unique identifier
+     propertyId: string;                   // Property being viewed
+     agentId: string;                      // Agent conducting the viewing
+     userId: string;                       // User who scheduled the viewing
+     date: string;                         // Date of viewing (YYYY-MM-DD)
+     timeSlot: string;                     // Time of viewing (HH:MM)
+     status: 'pending'|'confirmed'|'cancelled'|'completed'; // Current status
+     createdAt: string;                    // When viewing was scheduled
+     message?: string;                     // Optional message from user
+   }
+   ```
+
+3. **Component Interactions**:
+   - `ScheduleViewingModal`: Creates new viewing requests and saves them to both user and agent storage
+   - `ScheduledViewings`: Reads from storage to display viewings and handles status updates
+   - When an agent confirms/cancels a viewing, both user and agent storage are updated
+
+4. **Production Implementation Notes**:
+   - In a production environment, replace localStorage with API calls to a backend service
+   - Implement real-time updates using webhooks or websockets for status changes
+   - Add email notifications for viewing confirmations and reminders
+   - Integrate with calendar systems (Google Calendar, Outlook) for automatic scheduling
+
+5. **Future Enhancements**:
+   - Conflict detection for overlapping viewing times
+   - Recurring availability settings for agents
+   - Integration with property access systems for self-guided tours
+   - Analytics on viewing conversion rates
+
+This implementation provides a complete proof-of-concept that can be extended with actual backend services in production.

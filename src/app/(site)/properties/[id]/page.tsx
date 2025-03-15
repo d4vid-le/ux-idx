@@ -21,7 +21,7 @@ import ShareModal from '@/components/property/ShareModal';
 import FloorPlanViewer from '@/components/property/FloorPlanViewer';
 import PropertyPriceHistory from '@/components/property/PropertyPriceHistory';
 import ClientOnly from '@/components/ClientOnly';
-import Footer from '@/components/layout/Footer';
+import ScheduleViewingModal from '@/components/property/ScheduleViewingModal';
 
 // Tabs for property details
 type Tab = 'overview' | 'features' | 'details' | 'location' | 'neighborhood' | 'floorplan' | 'pricehistory';
@@ -36,6 +36,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [scheduleViewingOpen, setScheduleViewingOpen] = useState(false);
   const tabsRef = useRef<HTMLDivElement>(null);
 
   // Force a re-render when the gallery opens/closes
@@ -102,6 +103,19 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+  };
+
+  const handleScheduleViewing = () => {
+    setScheduleViewingOpen(true);
+    
+    // Track schedule viewing click for analytics
+    if (typeof window !== 'undefined' && 'dataLayer' in window) {
+      (window as any).dataLayer.push({
+        event: 'schedule_viewing_click',
+        property_id: property?.id,
+        source: 'property_details',
+      });
+    }
   };
 
   if (loading) {
@@ -517,7 +531,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                           >
                             View all {property.features.length} features
                             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7m0 0l7-7-7-7" />
                             </svg>
                           </button>
                         </div>
@@ -637,6 +651,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
               agent={property?.agent || undefined}
               propertyId={property.id}
               propertyAddress={property.address}
+              onScheduleViewing={handleScheduleViewing}
             />
             
             {/* Open House Schedule */}
@@ -646,7 +661,10 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                 <div className="font-medium">Sun, Mar 16th</div>
                 <div className="text-gray-600">1:00 PM - 2:30 PM EDT</div>
               </div>
-              <button className="w-full flex items-center justify-center bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors">
+              <button 
+                onClick={handleScheduleViewing}
+                className="w-full flex items-center justify-center bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors"
+              >
                 <Calendar size={18} className="mr-2" />
                 Schedule a Viewing
               </button>
@@ -763,6 +781,26 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
         )}
       </ClientOnly>
 
+      {/* Viewing Schedule Modal */}
+      <ClientOnly>
+        {property && (
+          <ScheduleViewingModal
+            isOpen={scheduleViewingOpen}
+            onClose={() => setScheduleViewingOpen(false)}
+            propertyId={property.id}
+            propertyAddress={property.address}
+            propertyImage={property.imageUrl}
+            agent={property.agent ? {
+              id: 'agent-' + property.id, // Generate a fallback ID based on property ID
+              name: property.agent.name,
+              email: property.agent.email,
+              phone: property.agent.phone,
+              image: property.agent.image
+            } : undefined}
+          />
+        )}
+      </ClientOnly>
+
       {/* Back to Top Button - appears when scrolled down */}
       {scrollProgress > 20 && (
         <button
@@ -776,9 +814,6 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
           </svg>
         </button>
       )}
-
-      {/* Footer component */}
-      <Footer />
     </main>
   );
-} 
+}

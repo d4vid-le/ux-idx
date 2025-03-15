@@ -10,6 +10,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import PropertyCard from '@/components/PropertyCard';
+import ScheduledViewings from '@/components/dashboard/ScheduledViewings';
 
 export default function DashboardPage() {
   const [savedProperties, setSavedProperties] = useState<Property[]>([]);
@@ -26,6 +27,7 @@ export default function DashboardPage() {
     imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e',
     office: 'IDX Solution Real Estate',
   });
+  const [userId] = useState('user-1'); // For demo purposes
 
   useEffect(() => {
     // Simulate fetching user data
@@ -207,6 +209,15 @@ export default function DashboardPage() {
             </Card>
           </div>
           
+          {/* Scheduled Viewings Section */}
+          <div className="mt-8">
+            <h2 className="text-xl font-semibold text-gray-800 flex items-center mb-4">
+              <Calendar className="h-5 w-5 mr-2 text-blue-600" />
+              Your Property Viewings
+            </h2>
+            <ScheduledViewings userType="client" userId={userId} />
+          </div>
+
           {/* Featured Properties Section */}
           <div className="space-y-4 mt-8">
             <div className="flex justify-between items-center">
@@ -274,4 +285,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-} 
+}

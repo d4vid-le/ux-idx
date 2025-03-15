@@ -32,12 +32,14 @@ export interface PropertyContactFormProps {
     rating?: number;
     reviews?: number;
   };
+  onScheduleViewing?: () => void;
 }
 
 export default function PropertyContactForm({
   propertyId,
   propertyAddress,
   agent,
+  onScheduleViewing,
 }: PropertyContactFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -121,7 +123,13 @@ export default function PropertyContactForm({
       });
     }
     
-    window.open(`/properties/${propertyId}/schedule`, '_blank');
+    // Use the provided function to open the modal instead of redirecting
+    if (onScheduleViewing) {
+      onScheduleViewing();
+    } else {
+      // Fall back to old behavior if onScheduleViewing is not provided
+      window.open(`/properties/${propertyId}/schedule`, '_blank');
+    }
   };
   
   const handlePhoneCall = () => {
