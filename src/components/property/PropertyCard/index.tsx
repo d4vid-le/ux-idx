@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '../../../components/ui/badge';
-import { Heart } from 'lucide-react';
+import { Heart, ArrowUpRight } from 'lucide-react';
 import { useFavorites } from '@/hooks/useFavorites';
 
 interface PropertyCardProps {
@@ -43,19 +43,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     maximumFractionDigits: 0,
   }).format(price);
 
-  // Status color mapping
-  const statusColorMap = {
-    'For Sale': 'bg-green-100 text-green-800',
-    'For Rent': 'bg-blue-100 text-blue-800',
-    'Sold': 'bg-red-100 text-red-800',
-    'Pending': 'bg-orange-100 text-orange-800'
-  };
-  
-  const statusColor = statusColorMap[status] || 'bg-gray-100 text-gray-800';
+  // Extract neighborhood (dummy implementation for demo)
+  const neighborhood = "Upper East Side";
 
   return (
     <Link href={`/properties/${id}`}>
-      <div className="rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white h-full flex flex-col">
+      <div className="bg-[#1D1D1D] rounded-lg overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col cursor-pointer">
         {/* Property Image */}
         <div className="relative h-48 w-full">
           <Image 
@@ -64,13 +57,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             fill
             className="object-cover"
           />
+          
+          {/* Status Badge - Moved inside the image area */}
           <div className="absolute top-2 left-2">
-            <Badge className={statusColor}>{status}</Badge>
+            <Badge className="bg-black/70 text-white hover:bg-black/80">{status}</Badge>
           </div>
           
           {/* Favorite Button */}
           <button 
-            className="absolute top-2 right-2 h-8 w-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors"
+            className="absolute top-2 right-2 bg-white/80 hover:bg-white p-1.5 rounded-full text-rose-500 hover:text-rose-600"
             onClick={handleFavoriteClick}
             aria-label={isFavorite(id) ? "Remove from favorites" : "Add to favorites"}
           >
@@ -81,36 +76,34 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </div>
 
         {/* Property Info */}
-        <div className="p-4 flex flex-col flex-grow">
-          {/* Address with neighborhood */}
-          <div className="text-gray-600 text-sm mb-2">
-            <div>{address}</div>
-            <div className="text-gray-500 text-xs mt-0.5">Upper East Side</div>
-          </div>
-          <p className="text-xl font-bold text-gray-900 mb-3">{formattedPrice}</p>
+        <div className="p-3 flex-grow flex flex-col text-white">
+          {/* Divider line - above the price */}
+          <div className="h-[2px] w-full bg-white mb-3"></div>
           
-          {/* Property Details */}
-          <div className="flex items-center space-x-2 text-gray-700 text-xs mt-auto">
+          {/* Price */}
+          <div className="mb-1.5">
+            <span className="text-xl font-medium">{formattedPrice}</span>
+          </div>
+          
+          {/* Key Property Features */}
+          <div className="flex items-center space-x-2 mb-2 text-white text-xs">
             <div className="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              <span>{bedrooms}</span>
+              <span>{bedrooms} bd</span>
             </div>
-            <span className="text-gray-300">|</span>
+            <div className="text-gray-500">|</div>
             <div className="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span>{bathrooms}</span>
+              <span>{bathrooms} ba</span>
             </div>
-            <span className="text-gray-300">|</span>
+            <div className="text-gray-500">|</div>
             <div className="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
-              </svg>
-              <span>{sqft.toLocaleString()} sqft</span>
+              <span>{sqft.toLocaleString()} sq²</span>
             </div>
+          </div>
+          
+          {/* Address */}
+          <div className="mb-1">
+            <h3 className="text-base font-medium text-white">{address}</h3>
+            <p className="text-sm text-gray-400">{neighborhood}</p>
           </div>
         </div>
       </div>
@@ -118,4 +111,4 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   );
 };
 
-export default PropertyCard; 
+export default PropertyCard;

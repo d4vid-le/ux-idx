@@ -283,7 +283,7 @@ export default function SearchPage() {
       {/* Map Toggle Button - Only visible on desktop */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-10 hidden lg:block">
         <button 
-          className="bg-white shadow-md px-4 py-2 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border border-gray-200"
+          className="bg-black shadow-md px-4 py-2 rounded-full text-sm font-medium text-white hover:bg-black/80 transition-colors"
           onClick={() => setShowMap(!showMap)}
         >
           {showMap ? 'Hide Map' : 'Show Map'}

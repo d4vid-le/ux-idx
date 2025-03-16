@@ -84,48 +84,57 @@ export default function SimilarProperties({
             <Link 
               key={property.id} 
               href={`/properties/${property.id}`}
-              className="property-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md border border-gray-200 animate-fade-in flex-shrink-0 w-[280px] md:w-[330px]"
+              className="property-card bg-[#1D1D1D] rounded-lg overflow-hidden shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex-shrink-0 w-[280px] md:w-[330px] cursor-pointer"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="relative h-48 image-hover-zoom">
+              <div className="relative h-48">
                 <Image
                   src={property.imageUrl}
                   alt={property.title}
                   fill
                   className="object-cover"
                 />
-                <div className="absolute top-2 left-2 bg-blue-600 text-white px-2 py-1 text-xs font-medium rounded">
+                <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 text-xs font-medium rounded">
                   {property.status}
                 </div>
                 <button 
                   onClick={(e) => toggleFavorite(e, property.id)}
-                  className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors z-10"
+                  className="absolute top-2 right-2 bg-white/80 hover:bg-white p-1.5 rounded-full text-rose-500 hover:text-rose-600"
                   aria-label={favorites[property.id] ? "Remove from favorites" : "Add to favorites"}
                 >
                   <Heart 
-                    className={`h-4 w-4 ${favorites[property.id] ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
+                    className={`h-5 w-5 ${favorites[property.id] ? 'fill-red-500 text-red-500' : 'text-gray-400'}`}
                   />
                 </button>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent text-white p-3">
-                  <div className="font-bold">{formatPrice(property.price)}</div>
-                </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900 mb-1 truncate">{property.title}</h3>
-                <p className="text-gray-600 text-sm mb-2 truncate">{property.address}</p>
-                <div className="flex items-center text-sm text-gray-700 space-x-4">
+              <div className="p-3 text-white">
+                {/* Divider line - above the price */}
+                <div className="h-[2px] w-full bg-white mb-3"></div>
+                
+                {/* Price */}
+                <div className="mb-1.5">
+                  <span className="text-xl font-medium">{formatPrice(property.price)}</span>
+                </div>
+                
+                {/* Property Features */}
+                <div className="flex items-center space-x-2 mb-2 text-white text-xs">
                   <div className="flex items-center">
-                    <Bed className="w-4 h-4 mr-1 text-gray-500" />
-                    {property.bedrooms} bd
+                    <span>{property.bedrooms} bd</span>
                   </div>
+                  <div className="text-gray-500">|</div>
                   <div className="flex items-center">
-                    <Bath className="w-4 h-4 mr-1 text-gray-500" />
-                    {property.bathrooms} ba
+                    <span>{property.bathrooms} ba</span>
                   </div>
+                  <div className="text-gray-500">|</div>
                   <div className="flex items-center">
-                    <Square className="w-4 h-4 mr-1 text-gray-500" />
-                    {property.sqft} sqft
+                    <span>{property.sqft} sq²</span>
                   </div>
+                </div>
+                
+                {/* Address */}
+                <div className="mb-1">
+                  <h3 className="text-base font-medium text-white truncate">{property.title}</h3>
+                  <p className="text-sm text-gray-400 truncate">{property.address}</p>
                 </div>
               </div>
             </Link>

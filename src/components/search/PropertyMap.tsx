@@ -24,6 +24,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [infoWindowOpen, setInfoWindowOpen] = useState<string | null>(null);
+  const [infoWindowPosition, setInfoWindowPosition] = useState<{ x: number; y: number } | null>(null);
 
   // Format price for display on markers
   const formatPriceForMarker = (price: number): string => {
@@ -55,6 +56,8 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   const showInfoWindow = (e: React.MouseEvent, propertyId: string) => {
     e.stopPropagation();
     setInfoWindowOpen(propertyId === infoWindowOpen ? null : propertyId);
+    const rect = (e.target as HTMLDivElement).getBoundingClientRect();
+    setInfoWindowPosition({ x: rect.left, y: rect.top });
   };
 
   // Close info window
@@ -103,8 +106,8 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
                     className={`
                       shadow-md rounded-full px-3 py-1 text-sm font-medium cursor-pointer
                       ${selectedProperty?.id === property.id 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-white text-gray-900 hover:bg-blue-100'
+                        ? 'bg-black text-white' 
+                        : 'bg-black/70 text-white hover:bg-black/80'
                       }
                     `}
                     onClick={(e) => {
@@ -118,69 +121,77 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
                   
                   {/* Property Info Window - Flex Row Layout */}
                   {infoWindowOpen === property.id && (
-                    <div className="absolute z-20 w-80 bg-white rounded-lg shadow-lg mt-2 -translate-x-1/2 left-1/2 overflow-hidden">
-                      <div className="relative">
-                        {/* Close button */}
-                        <button 
-                          className="absolute top-2 right-2 h-6 w-6 bg-white bg-opacity-80 rounded-full flex items-center justify-center z-10 text-gray-600 hover:text-gray-900"
-                          onClick={closeInfoWindow}
-                        >
-                          <X size={14} />
-                        </button>
-                        
-                        <div className="flex flex-row h-28">
-                          {/* Left: Property image - Now a clickable link with enhanced styling */}
-                          <Link 
-                            href={`/properties/${property.id}`}
-                            className="relative h-full w-28 flex-shrink-0 overflow-hidden cursor-pointer transition-transform hover:brightness-90"
-                            title="Click to view property details"
+                    <div className="fixed inset-0 z-50 pointer-events-none" onClick={(e) => closeInfoWindow(e)}>
+                      <Link 
+                        href={`/properties/${property.id}`}
+                        className="absolute z-20 w-80 bg-[#1D1D1D] rounded-lg shadow-lg pointer-events-auto overflow-hidden"
+                        style={{
+                          top: `${infoWindowPosition?.y || 0}px`,
+                          left: `${infoWindowPosition?.x || 0}px`,
+                          transform: 'translate(-50%, 10px)'
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="relative">
+                          {/* Close button */}
+                          <button 
+                            className="absolute top-2 right-2 h-6 w-6 bg-white/80 hover:bg-white rounded-full flex items-center justify-center z-10 text-gray-600 hover:text-gray-900"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              closeInfoWindow(e);
+                            }}
                           >
-                            <div className="absolute inset-0 bg-blue-600 bg-opacity-0 hover:bg-opacity-10 transition-all z-10"></div>
-                            <Image 
-                              src={property.imageUrl} 
-                              alt={property.title} 
-                              fill 
-                              className="object-cover" 
-                            />
-                            {/* Status Badge */}
-                            <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded text-[10px] z-20">
-                              {property.status}
-                            </div>
-                          </Link>
+                            <X size={14} />
+                          </button>
                           
-                          {/* Right: Property details - NOT a link */}
-                          <div className="p-3 flex-1 min-w-0 flex flex-col">
-                            {/* Price */}
-                            <p className="text-blue-600 font-bold text-sm">
-                              {formatPrice(property.price)}
-                            </p>
-                            
-                            {/* Location with neighborhood */}
-                            <div className="text-gray-600 text-xs mt-1">
-                              <div className="truncate">{property.address}</div>
-                              <div className="text-gray-500 text-[10px] mt-0.5">Upper East Side</div>
+                          <div className="flex flex-row h-28">
+                            {/* Left: Property image */}
+                            <div className="relative h-full w-28 flex-shrink-0 overflow-hidden rounded-l-lg">
+                              <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all z-10"></div>
+                              <Image 
+                                src={property.imageUrl} 
+                                alt={property.title} 
+                                fill 
+                                className="object-cover" 
+                              />
+                              {/* Status Badge */}
+                              <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded text-[10px] z-20">
+                                {property.status}
+                              </div>
                             </div>
                             
-                            {/* Property Details */}
-                            <div className="flex items-center space-x-2 text-gray-500 text-xs mt-auto pt-1">
-                              <div className="flex items-center">
-                                <Bed size={12} className="mr-1" />
-                                <span>{property.bedrooms}</span>
+                            {/* Right: Property details */}
+                            <div className="p-3 flex-1 min-w-0 flex flex-col">
+                              {/* Price */}
+                              <p className="text-white font-medium text-sm">
+                                {formatPrice(property.price)}
+                              </p>
+                              
+                              {/* Location with neighborhood */}
+                              <div className="text-white text-xs mt-1">
+                                <div className="truncate">{property.address}</div>
+                                <div className="text-gray-400 text-[10px] mt-0.5">Upper East Side</div>
                               </div>
-                              <span className="text-gray-300 text-xs">|</span>
-                              <div className="flex items-center">
-                                <Bath size={12} className="mr-1" />
-                                <span>{property.bathrooms}</span>
-                              </div>
-                              <span className="text-gray-300 text-xs">|</span>
-                              <div className="flex items-center">
-                                <Square size={12} className="mr-1" />
-                                <span>{property.sqft.toLocaleString()} sqft</span>
+                              
+                              {/* Property Details */}
+                              <div className="flex items-center space-x-2 text-white text-xs mt-auto pt-1">
+                                <div className="flex items-center">
+                                  <span>{property.bedrooms} bd</span>
+                                </div>
+                                <span className="text-gray-500 text-xs">|</span>
+                                <div className="flex items-center">
+                                  <span>{property.bathrooms} ba</span>
+                                </div>
+                                <span className="text-gray-500 text-xs">|</span>
+                                <div className="flex items-center">
+                                  <span>{property.sqft.toLocaleString()} sq²</span>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     </div>
                   )}
                 </div>

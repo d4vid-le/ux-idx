@@ -173,6 +173,7 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({
   
   // Calculate total pages
   const totalPages = Math.ceil(featuredProperties.length / propertiesPerPage);
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
   
   // Get current properties
   const indexOfLastProperty = currentPage * propertiesPerPage;
@@ -261,10 +262,10 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({
         </div>
         
         {/* Property Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {currentProperties.map((property) => (
             <Link href={`/properties/${property.id}`} key={property.id}>
-              <div className="bg-white rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer h-full">
+              <div className="bg-[#1D1D1D] rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer h-full">
                 {/* Property Image with Slider */}
                 <div className="relative h-60 w-full group">
                   <Image 
@@ -308,38 +309,34 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({
                 </div>
                 
                 {/* Property Content */}
-                <div className="p-4">
-                  {/* Price (moved above title) */}
-                  <p className="text-blue-600 font-bold text-lg mb-1">{property.price}</p>
+                <div className="p-3 text-white">
+                  {/* Divider line - above the price */}
+                  <div className="h-[2px] w-full bg-white mb-3"></div>
                   
-                  {/* Location with neighborhood */}
-                  <div className="text-gray-600 text-sm mb-3">
-                    <div>{property.address}</div>
-                    <div className="text-gray-500 text-xs mt-0.5">{property.neighborhood}</div>
+                  {/* Price */}
+                  <div className="mb-1.5">
+                    <span className="text-xl font-medium">{property.price}</span>
                   </div>
                   
-                  {/* Property Details */}
-                  <div className="flex items-center space-x-2 text-gray-500 border-t pt-3 text-xs">
+                  {/* Property Features */}
+                  <div className="flex items-center space-x-2 mb-2 text-white text-xs">
                     <div className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                      </svg>
-                      <span>{property.beds}</span>
+                      <span>{property.beds} bd</span>
                     </div>
-                    <span className="text-gray-300">|</span>
+                    <div className="text-gray-500">|</div>
                     <div className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span>{property.baths}</span>
+                      <span>{property.baths} ba</span>
                     </div>
-                    <span className="text-gray-300">|</span>
+                    <div className="text-gray-500">|</div>
                     <div className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
-                      </svg>
-                      <span>{property.sqft} sqft</span>
+                      <span>{property.sqft} sq²</span>
                     </div>
+                  </div>
+                  
+                  {/* Address */}
+                  <div className="mb-1">
+                    <h3 className="text-base font-medium text-white">{property.address}</h3>
+                    <p className="text-sm text-gray-400">{property.neighborhood}</p>
                   </div>
                 </div>
               </div>
@@ -348,60 +345,44 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({
         </div>
         
         {/* Pagination */}
-        <div className="mt-12 flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0">
-            <p className="text-gray-600">
-              Showing {indexOfFirstProperty + 1}-{Math.min(indexOfLastProperty, featuredProperties.length)} of {featuredProperties.length} properties
-            </p>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Button 
-              onClick={prevPage} 
+        <div className="flex justify-center mt-8">
+          <nav className="inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <button
+              onClick={prevPage}
               disabled={currentPage === 1}
-              variant="outline"
-              className={`px-4 py-2 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:text-blue-600 hover:border-blue-600 active:bg-blue-50'}`}
+              className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium  ${
+                currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-black hover:bg-gray-200'
+              }`}
             >
-              Previous
-            </Button>
+              <span className="sr-only">Previous</span>
+              <ChevronLeft size={18} />
+            </button>
             
-            <div className="flex space-x-1">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <Button
-                  key={i + 1}
-                  onClick={() => paginate(i + 1)}
-                  variant={currentPage === i + 1 ? "default" : "outline"}
-                  className={`px-4 py-2 ${currentPage === i + 1 ? 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800' : 'text-gray-700 hover:text-blue-600 hover:border-blue-600 active:bg-blue-50'}`}
-                >
-                  {i + 1}
-                </Button>
-              ))}
-            </div>
+            {pageNumbers.map((number) => (
+              <button
+                key={number}
+                onClick={() => paginate(number)}
+                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                  currentPage === number
+                    ? 'z-10 bg-black border-black text-white'
+                    : 'bg-white border-gray-300 text-black hover:bg-gray-200'
+                }`}
+              >
+                {number}
+              </button>
+            ))}
             
-            <Button 
-              onClick={nextPage} 
+            <button
+              onClick={nextPage}
               disabled={currentPage === totalPages}
-              variant="outline"
-              className={`px-4 py-2 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:text-blue-600 hover:border-blue-600 active:bg-blue-50'}`}
+              className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
+                currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-black hover:bg-gray-200'
+              }`}
             >
-              Next
-            </Button>
-          </div>
-          
-          <div className="mt-4 md:mt-0 sm:mt-4">
-            <style jsx global>{`
-              @media (max-width: 750px) {
-                .mt-4 {
-                  margin-top: 14px !important;
-                }
-              }
-            `}</style>
-            <Link href="/search">
-              <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 active:bg-blue-100">
-                View All Properties
-              </Button>
-            </Link>
-          </div>
+              <span className="sr-only">Next</span>
+              <ChevronRight size={18} />
+            </button>
+          </nav>
         </div>
       </div>
     </section>
