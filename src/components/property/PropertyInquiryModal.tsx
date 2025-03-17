@@ -268,7 +268,7 @@ export default function PropertyInquiryModal({
     <div className={`fixed bottom-0 right-0 z-50 transition-all duration-300 ease-in-out max-w-md w-full md:w-96 ${className} animate-slide-in-up`}>
       {isMinimized ? (
         <div 
-          className="bg-blue-600 text-white p-4 rounded-lg shadow-xl cursor-pointer flex items-center justify-between m-4 button-interactive"
+          className="bg-gray-700 text-white p-4 rounded-lg shadow-xl cursor-pointer flex items-center justify-between m-4 button-interactive"
           onClick={handleMaximize}
           role="button"
           aria-expanded="false"
@@ -290,12 +290,12 @@ export default function PropertyInquiryModal({
           aria-modal="true"
         >
           {/* Header */}
-          <div className="bg-blue-600 text-white p-4 flex justify-between items-center">
+          <div className="bg-gray-700 text-white p-4 flex justify-between items-center">
             <h3 id="inquiry-modal-title" className="font-bold text-lg">Get More Info About This Property</h3>
             <div className="flex space-x-2">
               <button 
                 onClick={handleMinimize}
-                className="text-white p-1 hover:bg-blue-700 rounded"
+                className="text-white p-1 hover:bg-gray-800 rounded"
                 aria-label="Minimize"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -304,7 +304,7 @@ export default function PropertyInquiryModal({
               </button>
               <button 
                 onClick={handleClose}
-                className="text-white p-1 hover:bg-blue-700 rounded"
+                className="text-white p-1 hover:bg-gray-800 rounded"
                 aria-label="Close"
               >
                 <X className="w-4 h-4" />
@@ -329,7 +329,7 @@ export default function PropertyInquiryModal({
                 </button>
                 <button
                   onClick={handleScheduleTour}
-                  className="py-2 px-4 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="py-2 px-4 bg-gray-700 text-white rounded-md text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <Calendar className="w-4 h-4 inline-block mr-1" />
                   Schedule a Tour
@@ -436,7 +436,7 @@ export default function PropertyInquiryModal({
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 button-interactive"
+                    className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-600 button-interactive"
                   >
                     {isSubmitting ? (
                       <>

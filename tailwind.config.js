@@ -16,6 +16,26 @@ module.exports = {
 			},
 		},
 		extend: {
+			fontFamily: {
+				sans: ['var(--font-montserrat)'],
+			},
+			fontSize: {
+				'xs': ['0.75rem', { lineHeight: '1rem' }],
+				'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+				'base': ['1rem', { lineHeight: '1.5rem', letterSpacing: '-0.01em' }],
+				'lg': ['1.125rem', { lineHeight: '1.75rem', letterSpacing: '-0.01em' }],
+				'xl': ['1.25rem', { lineHeight: '1.75rem', letterSpacing: '-0.01em' }],
+				'2xl': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.02em' }],
+				'3xl': ['1.875rem', { lineHeight: '2.25rem', letterSpacing: '-0.02em' }],
+				'4xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.02em' }],
+				'5xl': ['3rem', { lineHeight: '1.16', letterSpacing: '-0.02em' }],
+			},
+			fontWeight: {
+				light: '300',
+				normal: '400',
+				medium: '500',
+				semibold: '600',
+			},
 			colors: {
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",

@@ -47,7 +47,7 @@ const PropertyListings: React.FC<PropertyListingsProps> = ({
     <div className="p-4 md:p-6 lg:p-6">
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-gray-700" />
         </div>
       ) : properties.length === 0 ? (
         <div className="text-center py-10">

@@ -30,50 +30,32 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) =>
   };
   
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left side - Image */}
-      <div className="hidden md:block md:w-1/2 lg:w-2/3 relative">
+    <div className="min-h-screen flex">
+      {/* Left Panel */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
         <Image
-          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1973&q=80"
-          alt="Modern real estate interior"
+          src="/images/auth-bg.jpg"
+          alt="Real estate background"
           fill
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-blue-900/30" />
-        <div className="absolute bottom-8 left-8 right-8 text-white">
-          <h2 className="text-3xl font-bold mb-2">{getSidebarTitle()}</h2>
-          <p className="text-white/90">
-            Browse thousands of properties with our industry-leading IDX platform.
-          </p>
-        </div>
+        <div className="absolute inset-0 bg-gray-900/30" />
       </div>
-
-      {/* Right side - Form */}
-      <div className="w-full md:w-1/2 lg:w-1/3 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          {/* Logo */}
-          <div className="flex items-center mb-8">
-            <Link href="/" className="flex items-center">
-              <div className="relative h-10 w-10 mr-3 bg-blue-500 rounded-full flex items-center justify-center overflow-hidden">
-                <span className="absolute text-white font-bold text-sm">db</span>
-              </div>
-              <h1 className="text-2xl font-bold">
-                <span className="text-gray-900">db</span>
-                <span className="text-blue-500">/</span>
-                <span className="text-gray-900">ux</span>
-                <span className="ml-2 text-sm font-normal tracking-wider text-blue-400">IDX Solution</span>
+      {/* Right Panel */}
+      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm lg:w-96">
+          <Link href="/" className="flex items-center mb-8">
+            <div className="relative h-10 w-10 mr-3 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden">
+              <Image src="/logo.png" alt="Logo" width={32} height={32} />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">
+                UX <span className="text-gray-400">/</span> IDX
               </h1>
-            </Link>
-          </div>
-
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
-            <p className="text-gray-600">{subtitle}</p>
-          </div>
-
-          {/* Form content */}
+              <span className="ml-2 text-sm font-normal tracking-wider text-gray-400">IDX Solution</span>
+            </div>
+          </Link>
           {children}
         </div>
       </div>

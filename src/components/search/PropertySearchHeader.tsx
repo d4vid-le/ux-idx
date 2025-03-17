@@ -127,7 +127,7 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
                 <input
                   type="text"
                   placeholder="Address, City, ZIP"
-                  className="pl-8 pr-2 py-2 w-full border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
+                  className="pl-8 pr-2 py-2 w-full border border-gray-300 rounded-md text-sm focus:ring-gray-700 focus:border-gray-700"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -149,7 +149,11 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
                     {['For sale', 'For rent', 'Sold', 'Pending'].map((status) => (
                       <button
                         key={status}
-                        className={`block w-full text-left px-4 py-2 text-sm ${filters.status === status ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          filters.status === status
+                            ? 'bg-gray-50 text-gray-700'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
                         onClick={() => handleFilterSelect('status', status)}
                       >
                         {status}
@@ -175,7 +179,11 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
                     {['Any price', 'Under $500K', '$500K - $1M', '$1M - $2M', '$2M - $5M', 'Over $5M'].map((price) => (
                       <button
                         key={price}
-                        className={`block w-full text-left px-4 py-2 text-sm ${filters.price === price ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          filters.price === price
+                            ? 'bg-gray-50 text-gray-700'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
                         onClick={() => handleFilterSelect('price', price)}
                       >
                         {price}
@@ -201,7 +209,11 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
                     {['All property types', 'House', 'Condo', 'Townhouse', 'Multi-family', 'Land', 'Other'].map((type) => (
                       <button
                         key={type}
-                        className={`block w-full text-left px-4 py-2 text-sm ${filters.propertyType === type ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          filters.propertyType === type
+                            ? 'bg-gray-50 text-gray-700'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
                         onClick={() => handleFilterSelect('propertyType', type)}
                       >
                         {type}
@@ -227,7 +239,11 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
                     {['All beds', '1+ beds', '2+ beds', '3+ beds', '4+ beds', '5+ beds'].map((beds) => (
                       <button
                         key={beds}
-                        className={`block w-full text-left px-4 py-2 text-sm ${filters.beds === beds ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          filters.beds === beds
+                            ? 'bg-gray-50 text-gray-700'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
                         onClick={() => handleFilterSelect('beds', beds)}
                       >
                         {beds}
@@ -253,7 +269,11 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
                     {['All baths', '1+ baths', '2+ baths', '3+ baths', '4+ baths'].map((baths) => (
                       <button
                         key={baths}
-                        className={`block w-full text-left px-4 py-2 text-sm ${filters.baths === baths ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          filters.baths === baths
+                            ? 'bg-gray-50 text-gray-700'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
                         onClick={() => handleFilterSelect('baths', baths)}
                       >
                         {baths}
@@ -265,7 +285,7 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
             </div>
 
             {/* Save Search */}
-            <Button variant="ghost" className="text-blue-600 hover:bg-blue-50 h-8 px-2 text-sm ml-auto">
+            <Button variant="ghost" className="text-gray-700 hover:bg-gray-50 h-8 px-2 text-sm ml-auto">
               Save search
             </Button>
           </div>

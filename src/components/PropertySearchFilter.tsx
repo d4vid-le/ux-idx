@@ -42,7 +42,7 @@ const PropertySearchFilter: React.FC<PropertySearchFilterProps> = ({ onFilterCha
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Price Range</label>
             <select 
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-gray-700 focus:border-gray-700"
               onChange={(e) => {
                 const [min, max] = e.target.value.split('-').map(Number);
                 handleInputChange('priceRange', [min, max]);
@@ -61,7 +61,7 @@ const PropertySearchFilter: React.FC<PropertySearchFilterProps> = ({ onFilterCha
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
             <select 
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-gray-700 focus:border-gray-700"
               onChange={(e) => handleInputChange('bedrooms', e.target.value === 'any' ? null : Number(e.target.value))}
             >
               <option value="any">Any</option>
@@ -77,7 +77,7 @@ const PropertySearchFilter: React.FC<PropertySearchFilterProps> = ({ onFilterCha
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Bathrooms</label>
             <select 
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-gray-700 focus:border-gray-700"
               onChange={(e) => handleInputChange('bathrooms', e.target.value === 'any' ? null : Number(e.target.value))}
             >
               <option value="any">Any</option>
@@ -92,7 +92,7 @@ const PropertySearchFilter: React.FC<PropertySearchFilterProps> = ({ onFilterCha
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
             <select 
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-gray-700 focus:border-gray-700"
               onChange={(e) => handleInputChange('propertyType', e.target.value === 'any' ? null : e.target.value)}
             >
               <option value="any">Any</option>
@@ -108,7 +108,7 @@ const PropertySearchFilter: React.FC<PropertySearchFilterProps> = ({ onFilterCha
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
             <select 
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-gray-700 focus:border-gray-700"
               onChange={(e) => handleInputChange('status', e.target.value === 'any' ? null : e.target.value)}
             >
               <option value="any">Any</option>
@@ -121,7 +121,7 @@ const PropertySearchFilter: React.FC<PropertySearchFilterProps> = ({ onFilterCha
         </div>
         
         <div className="mt-4 flex justify-end">
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button type="submit" className="bg-gray-700 hover:bg-gray-800 text-white">
             Search Properties
           </Button>
         </div>

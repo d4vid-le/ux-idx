@@ -67,19 +67,20 @@ export default function FloorPlanViewer({
         {/* Floor Plan Display */}
         <div className="p-4 overflow-auto h-[500px] flex items-center justify-center">
           <div className="relative" style={{ transform: `scale(${scale})`, transition: 'transform 0.2s ease-in-out' }}>
-            {isLoading && (
+            {isLoading ? (
               <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-700"></div>
               </div>
+            ) : (
+              <Image
+                src={floorPlanUrl}
+                alt="Floor Plan"
+                width={1000}
+                height={800}
+                className="max-w-full h-auto"
+                onLoad={() => setIsLoading(false)}
+              />
             )}
-            <Image
-              src={floorPlanUrl}
-              alt="Floor Plan"
-              width={1000}
-              height={800}
-              className="max-w-full h-auto"
-              onLoad={() => setIsLoading(false)}
-            />
           </div>
         </div>
         

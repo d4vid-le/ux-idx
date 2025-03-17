@@ -21,11 +21,11 @@ export default function PropertyFeatures({
           {features.map((feature, index) => (
             <div key={index} className="flex items-center">
               {iconType === 'check' ? (
-                <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600">
+                <div className="w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center mr-3 text-gray-700">
                   <Check size={12} />
                 </div>
               ) : (
-                <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 flex-shrink-0"></div>
+                <div className="w-2 h-2 bg-gray-700 rounded-full mr-3 flex-shrink-0"></div>
               )}
               <span className="text-gray-700">{feature}</span>
             </div>

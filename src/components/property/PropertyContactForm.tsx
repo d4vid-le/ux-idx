@@ -224,7 +224,7 @@ export default function PropertyContactForm({
             <input
               id="name"
               type="text"
-              className={`w-full px-3 py-2 border ${errors.name ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
+              className={`w-full px-3 py-2 border ${errors.name ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-700 focus:border-gray-700 transition-colors`}
               placeholder="Your name"
               {...register('name')}
               aria-invalid={errors.name ? 'true' : 'false'}
@@ -241,7 +241,7 @@ export default function PropertyContactForm({
             <input
               id="email"
               type="email"
-              className={`w-full px-3 py-2 border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
+              className={`w-full px-3 py-2 border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-700 focus:border-gray-700 transition-colors`}
               placeholder="you@example.com"
               {...register('email')}
               aria-invalid={errors.email ? 'true' : 'false'}
@@ -258,7 +258,7 @@ export default function PropertyContactForm({
             <input
               id="phone"
               type="tel"
-              className={`w-full px-3 py-2 border ${errors.phone ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
+              className={`w-full px-3 py-2 border ${errors.phone ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-700 focus:border-gray-700 transition-colors`}
               placeholder="(123) 456-7890"
               {...register('phone')}
               aria-invalid={errors.phone ? 'true' : 'false'}
@@ -275,7 +275,7 @@ export default function PropertyContactForm({
             <textarea
               id="message"
               rows={4}
-              className={`w-full px-3 py-2 border ${errors.message ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors`}
+              className={`w-full px-3 py-2 border ${errors.message ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-700 focus:border-gray-700 transition-colors`}
               {...register('message')}
               aria-invalid={errors.message ? 'true' : 'false'}
             />
@@ -289,7 +289,7 @@ export default function PropertyContactForm({
               <input
                 id="terms"
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-gray-300 text-gray-700 focus:ring-gray-500"
                 {...register('terms')}
               />
             </div>
@@ -306,8 +306,8 @@ export default function PropertyContactForm({
           <div className="space-y-3">
             <button
               type="submit"
+              className="w-full flex items-center justify-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
               disabled={isSubmitting}
-              className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 transition-colors button-interactive"
             >
               {isSubmitting ? (
                 <>
@@ -322,19 +322,20 @@ export default function PropertyContactForm({
               )}
             </button>
             
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4 mt-4">
               <button
                 type="button"
                 onClick={handlePhoneCall}
-                className="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors button-interactive"
+                className="flex items-center justify-center px-4 py-3 border border-gray-700 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
               >
                 <Phone className="mr-2 h-4 w-4" />
                 Call {agent?.name ? agent.name.split(' ')[0] : 'Agent'}
               </button>
+
               <button
-                type="button" 
+                type="button"
                 onClick={handleScheduleTour}
-                className="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors button-interactive"
+                className="flex items-center justify-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
               >
                 <Calendar className="mr-2 h-4 w-4" />
                 Schedule Tour

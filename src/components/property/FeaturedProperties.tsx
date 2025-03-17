@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Property } from '@/types/property';
 import { PropertyCard } from './index';
+import { ArrowRight } from 'lucide-react';
 
 interface FeaturedPropertiesProps {
   properties: Property[];
@@ -16,12 +17,10 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({ properties }) =
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 sm:mb-0">Featured Properties</h2>
           <Link 
             href="/search" 
-            className="text-blue-600 hover:text-blue-800 font-medium flex items-center self-start sm:self-center sm:mt-[12px] md:mt-[12px] lg:mt-0"
+            className="text-gray-700 hover:text-gray-800 font-medium flex items-center self-start sm:self-center sm:mt-[12px] md:mt-[12px] lg:mt-0"
           >
-            View all properties
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-            </svg>
+            View All
+            <ArrowRight size={16} className="ml-1" />
           </Link>
         </div>
         
@@ -50,9 +49,9 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({ properties }) =
         <div className="mt-8 sm:mt-[18px] md:mt-[18px] lg:mt-10 text-center">
           <Link 
             href="/search" 
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-md transition-colors duration-200"
+            className="inline-block bg-gray-700 hover:bg-gray-800 text-white font-medium px-6 py-3 rounded-md transition-colors duration-200"
           >
-            Explore More Properties
+            View All Properties
           </Link>
         </div>
       </div>

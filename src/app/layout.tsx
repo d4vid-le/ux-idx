@@ -1,16 +1,17 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Poppins } from 'next/font/google';
+import { Montserrat } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import SupabaseProvider from '@/providers/SupabaseProvider';
 import UserProvider from '@/providers/UserProvider';
 import { AuthProvider } from '@/providers/AuthProvider';
 import Script from 'next/script';
 
-const poppins = Poppins({
+const montserrat = Montserrat({
 	subsets: ['latin'],
 	display: 'swap',
-	weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+	weight: ['300', '400', '500', '600'],
+	variable: '--font-montserrat',
 });
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" className="h-full">
-			<body className={`${poppins.className} antialiased h-full`}>
+			<body className={`${montserrat.variable} font-sans antialiased h-full text-base leading-relaxed`}>
 				<ThemeProvider attribute="class" defaultTheme="light">
 					<SupabaseProvider>
 						<UserProvider>

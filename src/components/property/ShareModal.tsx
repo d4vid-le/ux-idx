@@ -7,14 +7,18 @@ interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   propertyAddress: string;
-  propertyUrl: string;
+  propertyUrl?: string;
+  propertyId: string;
+  propertyImage: string;
 }
 
 export default function ShareModal({
   isOpen,
   onClose,
   propertyAddress,
-  propertyUrl
+  propertyUrl = typeof window !== 'undefined' ? window.location.href : '',
+  propertyId,
+  propertyImage
 }: ShareModalProps) {
   const [copied, setCopied] = useState(false);
   
@@ -79,14 +83,9 @@ export default function ShareModal({
               />
               <button
                 onClick={handleCopyLink}
-                className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700 flex items-center"
+                className="bg-gray-700 text-white px-4 py-2 rounded-r-md hover:bg-gray-800 flex items-center"
               >
-                {copied ? 'Copied!' : (
-                  <>
-                    <Copy size={16} className="mr-1" />
-                    Copy
-                  </>
-                )}
+                {copied ? 'Copied!' : 'Copy'}
               </button>
             </div>
           </div>
@@ -106,21 +105,21 @@ export default function ShareModal({
                 onClick={shareViaFacebook}
                 className="flex items-center justify-center p-3 border border-gray-200 rounded-md hover:bg-gray-50"
               >
-                <Facebook size={18} className="text-blue-600 mr-2" />
+                <Facebook size={18} className="text-gray-700 mr-2" />
                 <span>Facebook</span>
               </button>
               <button
                 onClick={shareViaTwitter}
                 className="flex items-center justify-center p-3 border border-gray-200 rounded-md hover:bg-gray-50"
               >
-                <Twitter size={18} className="text-blue-400 mr-2" />
+                <Twitter size={18} className="text-gray-700 mr-2" />
                 <span>Twitter</span>
               </button>
               <button
                 onClick={shareViaLinkedin}
                 className="flex items-center justify-center p-3 border border-gray-200 rounded-md hover:bg-gray-50"
               >
-                <Linkedin size={18} className="text-blue-700 mr-2" />
+                <Linkedin size={18} className="text-gray-700 mr-2" />
                 <span>LinkedIn</span>
               </button>
             </div>

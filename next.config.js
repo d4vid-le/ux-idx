@@ -4,13 +4,17 @@ const nextConfig = {
   // output: 'export',
   
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', 'www.compass.com'],
     // Vercel handles image optimization automatically
     unoptimized: false,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.compass.com',
       },
     ],
   },

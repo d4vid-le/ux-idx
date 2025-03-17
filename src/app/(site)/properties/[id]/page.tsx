@@ -23,7 +23,7 @@ import PropertyPriceHistory from '@/components/property/PropertyPriceHistory';
 import ClientOnly from '@/components/ClientOnly';
 
 // Tabs for property details
-type Tab = 'overview' | 'features' | 'details' | 'location' | 'neighborhood' | 'floorplan' | 'pricehistory';
+type Tab = 'overview' | 'features' | 'details' | 'location' | 'floorplan' | 'pricehistory' | 'neighborhood';
 
 export default function PropertyDetailsPage({ params }: { params: { id: string } }) {
   const [property, setProperty] = useState<Property | null>(null);
@@ -76,6 +76,14 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     }
     setProperty(foundProperty || null);
     setLoading(false);
+  }, [params.id]);
+
+  // Load favorite state from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const favorites = JSON.parse(localStorage.getItem('favorites') || '{}');
+      setIsFavorite(!!favorites[params.id]);
+    }
   }, [params.id]);
 
   // Handle scroll events
@@ -136,7 +144,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
   const handleTabKeyNav = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
       e.preventDefault();
-      const tabs: Tab[] = ['overview', 'features', 'details', 'location', 'neighborhood', 'floorplan', 'pricehistory'];
+      const tabs: Tab[] = ['overview', 'features', 'details', 'location', 'floorplan', 'pricehistory', 'neighborhood'];
 
       const currentIndex = tabs.indexOf(activeTab);
       const newIndex = e.key === 'ArrowRight'
@@ -148,14 +156,26 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
   };
 
   const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+    const newState = !isFavorite;
+    setIsFavorite(newState);
+    
+    // Save to localStorage
+    if (typeof window !== 'undefined') {
+      const favorites = JSON.parse(localStorage.getItem('favorites') || '{}');
+      if (newState) {
+        favorites[params.id] = true;
+      } else {
+        delete favorites[params.id];
+      }
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
   };
 
   // Render loading state
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-700"></div>
       </div>
     );
   }
@@ -166,7 +186,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
       <div className="flex flex-col justify-center items-center min-h-screen">
         <h1 className="text-2xl font-bold mb-4">Property Not Found</h1>
         <p className="mb-6">The property you're looking for doesn't exist or has been removed.</p>
-        <Link href="/search" className="text-blue-600 hover:underline">
+        <Link href="/search" className="text-gray-700 hover:underline">
           Back to Search
         </Link>
       </div>
@@ -194,7 +214,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     <main className="min-h-screen bg-white relative custom-scrollbar">
       {/* Scroll Progress Bar */}
       <div
-        className="fixed top-0 left-0 h-1 bg-blue-600 z-50 transition-all duration-300 ease-out"
+        className="fixed top-0 left-0 h-1 bg-gray-700 z-50 transition-all duration-300 ease-out"
         style={{ width: `${scrollProgress}%` }}
         role="progressbar"
         aria-valuemin={0}
@@ -217,7 +237,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
       </div>
 
       {/* Open House Banner (if applicable) */}
-      <div className="bg-blue-600 text-white py-2 animate-fade-in">
+      <div className="bg-gray-700 text-white py-2 animate-fade-in">
         <div className="container mx-auto px-4">
           <div className="flex items-center">
             <Calendar size={18} className="mr-2" />
@@ -322,13 +342,10 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
                 {property.address}
               </h1>
-              <p className="text-gray-600 mb-2">
+              <p className="text-gray-600">
                 {property.neighborhood ? `${property.neighborhood}, ` : ''}
                 {cityStateZip}
               </p>
-              <div className="text-3xl font-bold text-blue-600 mb-4 price-highlight">
-                {formatPrice(property.price)}
-              </div>
             </div>
 
             {/* Quick Action Buttons */}
@@ -341,9 +358,44 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                 Print
               </button>
 
+              <button
+                onClick={() => setShareModalOpen(true)}
+                className="flex items-center px-3 py-2 rounded-md bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
+              >
+                <svg 
+                  className="w-[18px] h-[18px] mr-2" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+                  />
+                </svg>
+                Share
+              </button>
+
+              <button
+                onClick={toggleFavorite}
+                className={`flex items-center px-3 py-2 rounded-md border ${
+                  isFavorite 
+                    ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' 
+                    : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
+                }`}
+              >
+                <Heart 
+                  size={18} 
+                  className={`mr-2 ${isFavorite ? 'fill-current' : ''}`} 
+                />
+                {isFavorite ? 'Saved' : 'Save'}
+              </button>
+
               <a
                 href={`mailto:${agent.email}?subject=Inquiry about ${property.address}`}
-                className="flex items-center px-3 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                className="flex items-center px-3 py-2 rounded-md bg-gray-700 text-white hover:bg-gray-800"
               >
                 <Mail size={18} className="mr-2" />
                 Contact Agent
@@ -352,35 +404,21 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
           </div>
         </div>
 
-        {/* Key Facts */}
-        <div className="container mx-auto px-4 mb-8 animate-slide-in-up animate-delay-200">
-          <PropertyKeyFacts
-            price={property.price}
-            bedrooms={property.bedrooms}
-            bathrooms={property.bathrooms}
-            sqft={property.sqft}
-            propertyType={property.propertyType || 'Residential'}
-            yearBuilt={property.yearBuilt || 2000}
-            commonCharges={property.commonCharges || 2000}
-            realEstateTax={property.realEstateTax || 1800}
-          />
-        </div>
-
         {/* Tab Navigation - with sticky option */}
         <div
           ref={tabsRef}
-          className={`border-b border-gray-200 mb-6 sticky-tabs-container ${isHeaderSticky ? 'sticky top-0 z-30 bg-white shadow-md sticky' : ''
-            }`}
+          className={`border-b border-gray-200 mb-6 sticky-tabs-container ${isHeaderSticky ? 'sticky top-0 z-30 bg-white shadow-md sticky' : ''}`}
         >
           <div className="container mx-auto px-4">
             <nav className="flex -mb-px overflow-x-auto scrollbar-hide" role="tablist">
               <button
                 onClick={() => setActiveTab('overview')}
                 onKeyDown={handleTabKeyNav}
-                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'overview'
-                    ? 'border-blue-600 text-blue-600'
+                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${
+                  activeTab === 'overview'
+                    ? 'border-gray-700 text-gray-700'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                }`}
                 role="tab"
                 aria-selected={activeTab === 'overview'}
                 aria-controls="tab-overview"
@@ -395,10 +433,11 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
               <button
                 onClick={() => setActiveTab('features')}
                 onKeyDown={handleTabKeyNav}
-                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'features'
-                    ? 'border-blue-600 text-blue-600'
+                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${
+                  activeTab === 'features'
+                    ? 'border-gray-700 text-gray-700'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                }`}
                 role="tab"
                 aria-selected={activeTab === 'features'}
                 aria-controls="tab-features"
@@ -413,10 +452,11 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
               <button
                 onClick={() => setActiveTab('details')}
                 onKeyDown={handleTabKeyNav}
-                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'details'
-                    ? 'border-blue-600 text-blue-600'
+                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${
+                  activeTab === 'details'
+                    ? 'border-gray-700 text-gray-700'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                }`}
                 role="tab"
                 aria-selected={activeTab === 'details'}
                 aria-controls="tab-details"
@@ -429,12 +469,32 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                 </div>
               </button>
               <button
+                onClick={() => setActiveTab('location')}
+                onKeyDown={handleTabKeyNav}
+                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${
+                  activeTab === 'location'
+                    ? 'border-gray-700 text-gray-700'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+                role="tab"
+                aria-selected={activeTab === 'location'}
+                aria-controls="tab-location"
+                id="tab-button-location"
+                tabIndex={activeTab === 'location' ? 0 : -1}
+              >
+                <div className="flex items-center">
+                  <MapPin size={16} className="mr-2" />
+                  Location & Neighborhood
+                </div>
+              </button>
+              <button
                 onClick={() => setActiveTab('floorplan')}
                 onKeyDown={handleTabKeyNav}
-                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'floorplan'
-                    ? 'border-blue-600 text-blue-600'
+                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${
+                  activeTab === 'floorplan'
+                    ? 'border-gray-700 text-gray-700'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                }`}
                 role="tab"
                 aria-selected={activeTab === 'floorplan'}
                 aria-controls="tab-floorplan"
@@ -449,10 +509,11 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
               <button
                 onClick={() => setActiveTab('pricehistory')}
                 onKeyDown={handleTabKeyNav}
-                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'pricehistory'
-                    ? 'border-blue-600 text-blue-600'
+                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${
+                  activeTab === 'pricehistory'
+                    ? 'border-gray-700 text-gray-700'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
+                }`}
                 role="tab"
                 aria-selected={activeTab === 'pricehistory'}
                 aria-controls="tab-pricehistory"
@@ -464,47 +525,11 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                   Price History
                 </div>
               </button>
-              <button
-                onClick={() => setActiveTab('location')}
-                onKeyDown={handleTabKeyNav}
-                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'location'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                role="tab"
-                aria-selected={activeTab === 'location'}
-                aria-controls="tab-location"
-                id="tab-button-location"
-                tabIndex={activeTab === 'location' ? 0 : -1}
-              >
-                <div className="flex items-center">
-                  <MapPin size={16} className="mr-2" />
-                  Location
-                </div>
-              </button>
-              <button
-                onClick={() => setActiveTab('neighborhood')}
-                onKeyDown={handleTabKeyNav}
-                className={`py-4 px-1 mr-8 font-medium text-sm border-b-2 whitespace-nowrap ${activeTab === 'neighborhood'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                role="tab"
-                aria-selected={activeTab === 'neighborhood'}
-                aria-controls="tab-neighborhood"
-                id="tab-button-neighborhood"
-                tabIndex={activeTab === 'neighborhood' ? 0 : -1}
-              >
-                <div className="flex items-center">
-                  <MapPin size={16} className="mr-2" />
-                  Neighborhood
-                </div>
-              </button>
             </nav>
           </div>
         </div>
 
-        {/* Property Content */}
+        {/* Main Content Area */}
         <div className="container mx-auto px-4 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
@@ -517,9 +542,21 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
               >
                 <div>
                   <h2 className="text-xl font-bold mb-4">Property Description</h2>
-                  <div className="prose max-w-none mb-8">
+                  <div className="prose max-w-none mb-6">
                     <p className="whitespace-pre-line">{property.description || "This stunning property offers modern living in a desirable location. Contact us for more details about this exceptional home."}</p>
                   </div>
+
+                  {/* Key Facts */}
+                  <PropertyKeyFacts
+                    price={property.price}
+                    bedrooms={property.bedrooms}
+                    bathrooms={property.bathrooms}
+                    sqft={property.sqft}
+                    propertyType={property.propertyType || 'Condo'}
+                    yearBuilt={property.yearBuilt || 1985}
+                    commonCharges={property.commonCharges || 3200}
+                    realEstateTax={property.realEstateTax || 2000}
+                  />
 
                   {/* Quick Overview of Features */}
                   {property.features && property.features.length > 0 && (
@@ -550,13 +587,6 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                       </div>
                     </div>
                   )}
-
-                  {/* Location Preview */}
-                  <PropertyLocationMap
-                    address={property.address}
-                    location={property.location}
-                    neighborhood={property.neighborhood}
-                  />
 
                   {/* Mortgage Calculator - Moved from sidebar to overview section */}
                   <div className="mt-8 mb-8 bg-gray-50 rounded-lg p-6 border border-gray-100">
@@ -629,18 +659,14 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                   location={property.location}
                   neighborhood={property.neighborhood}
                 />
-              </div>
-
-              <div
-                id="tab-neighborhood"
-                role="tabpanel"
-                aria-labelledby="tab-button-neighborhood"
-                className={activeTab === 'neighborhood' ? '' : 'hidden'}
-              >
-                <PropertyNeighborhood
-                  neighborhood={property.neighborhood}
-                  address={property.address}
-                />
+                
+                {/* Neighborhood section moved here */}
+                <div className="mt-8">
+                  <PropertyNeighborhood
+                    neighborhood={property.neighborhood}
+                    address={property.address}
+                  />
+                </div>
               </div>
 
               <div
@@ -687,7 +713,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                   <div className="font-medium">Sun, Mar 16th</div>
                   <div className="text-gray-600">1:00 PM - 2:30 PM EDT</div>
                 </div>
-                <button className="w-full flex items-center justify-center bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors">
+                <button className="w-full flex items-center justify-center bg-gray-700 text-white py-3 rounded font-medium hover:bg-gray-800 transition-colors">
                   <Calendar size={18} className="mr-2" />
                   Schedule a Viewing
                 </button>
@@ -710,7 +736,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                   </div>
                   <div>
                     <div className="text-sm text-gray-500">Listing Courtesy of</div>
-                    <div className="font-medium">Keller Williams NYC</div>
+                    <div className="font-medium">The Finelli Team</div>
                   </div>
                 </div>
               </div>
@@ -724,23 +750,23 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
             <div className="flex items-center justify-center mb-6">
               <div className="text-center">
                 <div className="text-sm font-medium text-gray-700 mb-2">Listed by</div>
-                <div className="font-bold text-lg">Keller Williams NYC</div>
+                <div className="font-bold text-lg">The Finelli Team</div>
                 <div className="text-sm text-gray-600 mt-1">Licensed Real Estate Broker</div>
               </div>
             </div>
 
-            <div className="flex items-center justify-center mb-6">
-              <div className="h-16 w-16 relative mr-3">
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-200 rounded-full text-gray-700 font-bold">
-                  REBNY
-                </div>
-              </div>
-              <div className="text-sm text-gray-600">
-                This listing is provided courtesy of the Real Estate Board of New York (REBNY) and complies with all REBNY Residential Listing Service (RLS) guidelines.
-              </div>
+            <div className="flex justify-center mb-6">
+              <Image
+                src="https://www.compass.com/ucfe-assets/listing-assets/latest/img/compliance/NYCListingCompliance.png"
+                alt="NYC Listing Compliance"
+                width={120}
+                height={60}
+                className="max-h-[60px] w-auto object-contain"
+                priority
+              />
             </div>
 
-            <p className="text-xs text-gray-500 mt-4">
+            <p className="text-xs text-gray-500 mt-4 text-center">
               Data last updated on {formatDate(new Date().toISOString())} at 4:48 PM UTC
             </p>
 
@@ -806,6 +832,17 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
           />
         )}
       </ClientOnly>
+
+      {/* Share Modal */}
+      {shareModalOpen && (
+        <ShareModal
+          isOpen={shareModalOpen}
+          onClose={() => setShareModalOpen(false)}
+          propertyId={property.id}
+          propertyAddress={property.address}
+          propertyImage={images[0]}
+        />
+      )}
     </main>
   );
 }

@@ -4,6 +4,7 @@ import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Building, User as UserIcon, Menu, X } from "lucide-react";
+import Image from "next/image";
 
 const links = [
 	{
@@ -72,16 +73,14 @@ const Navbar = () => {
 						aria-label="Company"
 						title="Company"
 						className="flex items-center">
-						<div className="relative h-10 w-10 mr-3 bg-blue-500 rounded-full flex items-center justify-center overflow-hidden">
-							<span className="absolute text-white font-bold text-sm">db</span>
+						<div className="relative h-10 w-10 mr-3 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden">
+							<Image src="/logo.png" alt="Logo" width={32} height={32} />
 						</div>
 						<div>
-							<h1 className="text-xl font-bold">
-								<span className="text-gray-800">db</span>
-								<span className="text-blue-400">/</span>
-								<span className="text-gray-800">ux</span>
+							<h1 className="text-xl font-bold text-gray-900">
+								UX <span className="text-gray-400">/</span> IDX
 							</h1>
-							<p className="text-xs text-gray-500">IDX Solution</p>
+							<span className="text-sm font-normal tracking-wider text-gray-400">IDX Solution</span>
 						</div>
 					</Link>
 					

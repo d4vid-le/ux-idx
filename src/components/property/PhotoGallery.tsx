@@ -226,7 +226,7 @@ const PhotoGallery = memo(function PhotoGallery({
                   onClick={(e) => { e.stopPropagation(); goToImage(index); }}
                   className={`flex-shrink-0 h-16 w-24 relative rounded overflow-hidden border-2 gallery-thumbnail ${
                     currentIndex === index 
-                      ? 'border-blue-500 gallery-current' 
+                      ? 'border-gray-700 gallery-current' 
                       : 'border-transparent hover:border-white'
                   }`}
                   aria-label={`View image ${index + 1}`}

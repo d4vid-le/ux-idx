@@ -20,10 +20,10 @@ export default function PropertyNeighborhood({
       <div className="bg-gray-50 rounded-lg overflow-hidden">
         <div className="p-6">
           <div className="flex items-start mb-4">
-            <MapPin size={20} className="text-blue-600 mt-1 mr-2 flex-shrink-0" />
+            <MapPin size={20} className="text-gray-700 mt-1 mr-2 flex-shrink-0" />
             <div>
-              <p className="font-medium">{neighborhood || 'New York City'}</p>
-              <p className="text-sm text-gray-600 mt-1">{address}</p>
+              <h3 className="font-medium">Location</h3>
+              <p className="text-gray-600">{neighborhood}</p>
             </div>
           </div>
           
@@ -39,37 +39,37 @@ export default function PropertyNeighborhood({
           <h3 className="font-semibold text-lg mb-3">Neighborhood Highlights</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="flex items-start">
-              <Train size={18} className="text-blue-600 mt-1 mr-2 flex-shrink-0" />
+              <Train size={18} className="text-gray-700 mt-1 mr-2 flex-shrink-0" />
               <div>
-                <p className="font-medium">Transportation</p>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-medium">Public Transit</h3>
+                <p className="text-gray-600">
                   Multiple subway lines within 0.3 miles. Easy access to major highways.
                 </p>
               </div>
             </div>
             <div className="flex items-start">
-              <School size={18} className="text-blue-600 mt-1 mr-2 flex-shrink-0" />
+              <School size={18} className="text-gray-700 mt-1 mr-2 flex-shrink-0" />
               <div>
-                <p className="font-medium">Education</p>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-medium">Schools</h3>
+                <p className="text-gray-600">
                   Top-rated public and private schools in the district.
                 </p>
               </div>
             </div>
             <div className="flex items-start">
-              <ShoppingBag size={18} className="text-blue-600 mt-1 mr-2 flex-shrink-0" />
+              <ShoppingBag size={18} className="text-gray-700 mt-1 mr-2 flex-shrink-0" />
               <div>
-                <p className="font-medium">Shopping</p>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-medium">Shopping</h3>
+                <p className="text-gray-600">
                   Boutique shops, grocery stores, and major retailers nearby.
                 </p>
               </div>
             </div>
             <div className="flex items-start">
-              <Coffee size={18} className="text-blue-600 mt-1 mr-2 flex-shrink-0" />
+              <Coffee size={18} className="text-gray-700 mt-1 mr-2 flex-shrink-0" />
               <div>
-                <p className="font-medium">Dining & Entertainment</p>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-medium">Dining</h3>
+                <p className="text-gray-600">
                   Diverse restaurants, cafes, bars, and cultural venues.
                 </p>
               </div>

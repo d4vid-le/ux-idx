@@ -103,7 +103,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Address */}
           <div className="mb-1">
             <h3 className="text-base font-medium text-white">{address}</h3>
-            <p className="text-sm text-gray-400">{neighborhood}</p>
+            <p className="text-sm text-white/100">{neighborhood}</p>
           </div>
         </div>
       </div>

@@ -94,7 +94,7 @@ export default function PropertyPriceHistory({
   return (
     <div className={`mb-8 animate-fade-in ${className}`}>
       <h2 className="text-xl font-bold mb-4 flex items-center">
-        <DollarSign className="mr-2 text-blue-600" size={20} />
+        <DollarSign className="mr-2 text-gray-700" size={20} />
         Property History & Market Data
       </h2>
       
@@ -104,7 +104,7 @@ export default function PropertyPriceHistory({
           onClick={() => setActiveTab('history')}
           className={`py-2 px-4 font-medium text-sm border-b-2 mr-4 transition-colors ${
             activeTab === 'history'
-              ? 'border-blue-600 text-blue-600'
+              ? 'border-gray-700 text-gray-700'
               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
           }`}
           aria-selected={activeTab === 'history'}
@@ -116,7 +116,7 @@ export default function PropertyPriceHistory({
           onClick={() => setActiveTab('market')}
           className={`py-2 px-4 font-medium text-sm border-b-2 transition-colors ${
             activeTab === 'market'
-              ? 'border-blue-600 text-blue-600'
+              ? 'border-gray-700 text-gray-700'
               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
           }`}
           aria-selected={activeTab === 'market'}
@@ -134,7 +134,7 @@ export default function PropertyPriceHistory({
               <h3 className="font-semibold text-gray-700">Price History</h3>
               <button 
                 onClick={handleViewChart}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center button-interactive"
+                className="text-gray-700 hover:text-gray-900 text-sm font-medium flex items-center button-interactive"
               >
                 <BarChart3 size={16} className="mr-1" />
                 View Price Chart
@@ -151,7 +151,7 @@ export default function PropertyPriceHistory({
                     <div 
                       className={`w-full max-w-[30px] rounded-t ${
                         item.event === 'Listed' 
-                          ? 'bg-blue-500' 
+                          ? 'bg-gray-700' 
                           : item.event === 'Price Change' 
                             ? 'bg-amber-500' 
                             : item.event === 'Sold' 
@@ -191,7 +191,7 @@ export default function PropertyPriceHistory({
                 {historyData.map((item, index) => (
                   <tr 
                     key={index} 
-                    className={`hover:bg-blue-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                    className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
                   >
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
                       {formatDate(item.date)}
@@ -199,7 +199,7 @@ export default function PropertyPriceHistory({
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         item.event === 'Listed' 
-                          ? 'bg-blue-100 text-blue-800' 
+                          ? 'bg-gray-100 text-gray-700' 
                           : item.event === 'Price Change' 
                             ? 'bg-amber-100 text-amber-800' 
                             : item.event === 'Sold' 

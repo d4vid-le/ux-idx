@@ -102,9 +102,9 @@ const MortgageCalculator = memo(function MortgageCalculator({ propertyPrice }: M
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+      <div className="bg-gradient-to-r from-gray-700 to-gray-800 p-6 text-white">
         <h3 className="text-xl font-bold">Mortgage Calculator</h3>
-        <p className="text-blue-100 text-sm mt-1">Estimate your monthly mortgage payment</p>
+        <p className="text-gray-100 text-sm mt-1">Estimate your monthly mortgage payment</p>
       </div>
       
       <div className="p-6">
@@ -269,7 +269,7 @@ const MortgageCalculator = memo(function MortgageCalculator({ propertyPrice }: M
             {/* Payment Breakdown Visualization */}
             <div className="pt-4">
               <h4 className="font-medium text-gray-900 mb-2 flex items-center">
-                <BarChart2 size={18} className="text-blue-600 mr-2" />
+                <BarChart2 size={18} className="text-gray-700 mr-2" />
                 Payment Breakdown
               </h4>
               
@@ -312,10 +312,10 @@ const MortgageCalculator = memo(function MortgageCalculator({ propertyPrice }: M
         </div>
         
         {/* Monthly Payment Summary */}
-        <div className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-100">
+        <div className="mt-8 bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-lg border border-gray-200">
           <div className="sm:flex justify-between items-center">
             <div>
-              <div className="text-sm text-blue-600 font-medium mb-1">Estimated Monthly Payment</div>
+              <div className="text-sm text-gray-700 font-medium mb-1">Estimated Monthly Payment</div>
               <div className="text-3xl font-bold text-gray-900">
                 {formatCurrency(monthlyPayment)}<span className="text-sm font-normal text-gray-600">/mo</span>
               </div>
@@ -332,7 +332,7 @@ const MortgageCalculator = memo(function MortgageCalculator({ propertyPrice }: M
               
               <button
                 onClick={handleContactAgent}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-700 hover:bg-gray-800 focus:outline-none"
               >
                 <Calendar size={16} className="mr-2" />
                 Talk to an Agent
@@ -341,7 +341,7 @@ const MortgageCalculator = memo(function MortgageCalculator({ propertyPrice }: M
           </div>
           
           <div className="mt-4 text-sm text-gray-600 flex items-start">
-            <HelpCircle size={16} className="text-blue-400 mr-2 mt-0.5 flex-shrink-0" />
+            <HelpCircle size={16} className="text-gray-400 mr-2 mt-0.5 flex-shrink-0" />
             <p>This estimate includes principal, interest, property taxes, home insurance, and HOA dues. Actual payment will vary based on your specific situation and current rates.</p>
           </div>
         </div>

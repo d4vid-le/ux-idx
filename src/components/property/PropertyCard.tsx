@@ -110,7 +110,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             </span>
           )}
           {status && (
-            <span className="text-xs text-blue-300 bg-blue-900/60 px-2 py-0.5 rounded">
+            <span className="text-xs text-gray-200 bg-gray-700/60 px-2 py-0.5 rounded">
               {status}
             </span>
           )}

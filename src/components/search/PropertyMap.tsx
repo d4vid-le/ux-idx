@@ -12,6 +12,8 @@ interface PropertyMapProps {
   onPropertySelect: (property: Property) => void;
   centerCoordinates?: { lat: number; lng: number };
   searchRadius?: number;
+  isLoading?: boolean;
+  error?: string;
 }
 
 const PropertyMap: React.FC<PropertyMapProps> = ({
@@ -19,7 +21,9 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   selectedProperty,
   onPropertySelect,
   centerCoordinates,
-  searchRadius
+  searchRadius,
+  isLoading,
+  error
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -79,16 +83,16 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
         className="w-full h-full bg-gray-100"
         style={{ minHeight: '100%' }}
       >
-        {!mapLoaded ? (
-          <div className="flex justify-center items-center h-full">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-2 text-gray-600">Loading map...</p>
-            </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-700 mx-auto"></div>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-red-500">{error}</p>
           </div>
         ) : (
-          // Map placeholder with markers
-          <div className="relative h-full w-full bg-blue-50 flex flex-col">
+          <div className="relative h-full w-full bg-gray-50 flex flex-col">
             {/* Mock Map background - in a real implementation, this would be a Google Map */}
             <div className="absolute inset-0 bg-cover bg-center opacity-60" 
                 style={{ backgroundImage: 'url("https://maps.googleapis.com/maps/api/staticmap?center=40.73,-73.99&zoom=14&size=1200x1200&key=DEMO_KEY")' }}>
