@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, MapPin, Phone, Mail, Info, FileText, Home, DollarSign, Printer, Grid, Heart } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, MapPin, Phone, Mail, Info, FileText, Home, DollarSign, Printer, Grid, Heart } from 'lucide-react';
 import { mockProperties } from '@/data/mockProperties';
 import { Property } from '@/types/property';
 import { formatPrice, formatDate } from '@/lib/utils/formatting';
@@ -67,24 +67,70 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     }
   }, []);
 
-  useEffect(() => {
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [handleScroll]);
-
+  // Load property data
   useEffect(() => {
     // In a real app, we would fetch the property data from an API
     const foundProperty = mockProperties.find(p => p.id === params.id);
     if (!foundProperty) {
       console.error(`Property with ID ${params.id} not found.`);
-      alert(`Property with ID ${params.id} not found.`);
     }
     setProperty(foundProperty || null);
     setLoading(false);
   }, [params.id]);
+
+  // Handle scroll events
+  useEffect(() => {
+    // Add scroll event listener
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }
+    return undefined;
+  }, [handleScroll]);
+
+  // Define the keyboard navigation callback - must be defined even if not used yet
+  const handleKeyboardNav = useCallback((e: any) => {
+    // Property might be null during loading, so check property and images first
+    if (!property) return;
+    
+    const images: string[] = property.images || [property.imageUrl || ''];
+    
+    // Only handle keyboard navigation if we're not in a form input
+    if (typeof window !== 'undefined' && 
+        e.target && 
+        'tagName' in e.target && 
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+      return;
+    }
+    
+    if (e.key === 'ArrowRight' && images.length > 1) {
+      setActiveImageIndex(prev => (prev === images.length - 1 ? 0 : prev + 1));
+    } else if (e.key === 'ArrowLeft' && images.length > 1) {
+      setActiveImageIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
+    }
+  }, [property]);
+
+  // Safely attach keyboard event listeners only on the client-side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', handleKeyboardNav);
+      return () => {
+        window.removeEventListener('keydown', handleKeyboardNav);
+      };
+    }
+    return undefined;
+  }, [handleKeyboardNav]);
+
+  // Update the main image when active image index changes
+  useEffect(() => {
+    if (galleryOpen) {
+      // If gallery is open, pass the active index to it
+      closeGallery();
+      openGallery();
+    }
+  }, [activeImageIndex, galleryOpen, closeGallery, openGallery]);
 
   // Keyboard navigation for tabs
   const handleTabKeyNav = (e: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -105,6 +151,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     setIsFavorite(!isFavorite);
   };
 
+  // Render loading state
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -113,6 +160,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     );
   }
 
+  // Render error state if no property
   if (!property) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
@@ -125,8 +173,8 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
     );
   }
 
-  // Get the necessary data right at the top, with safe null checks
-  const images = property.images || [property.imageUrl];
+  // Get the necessary data for the UI
+  const images: string[] = property.images || [property.imageUrl || ''];
   const addressParts = property.address.split(',');
   const streetAddress = addressParts[0].trim();
   const cityStateZip = addressParts.slice(1).join(',').trim();
@@ -182,12 +230,40 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
       <div className="relative parallax-container">
         <div className="h-[60vh] relative">
           <Image
-            src={images[0]}
+            src={images[activeImageIndex]}
             alt={property.title}
             fill
-            className="object-cover"
+            className="object-cover transition-opacity duration-500"
             priority
           />
+          
+          {/* Image Navigation Arrows */}
+          {images.length > 1 && (
+            <>
+              <button 
+                onClick={(e) => { 
+                  e.preventDefault();
+                  setActiveImageIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200 hover:scale-110"
+                aria-label="Previous image"
+              >
+                <ArrowLeft size={20} />
+              </button>
+              
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveImageIndex(prev => (prev === images.length - 1 ? 0 : prev + 1));
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200 hover:scale-110"
+                aria-label="Next image"
+              >
+                <ArrowRight size={20} />
+              </button>
+            </>
+          )}
+          
           <div className="absolute top-4 right-4 flex space-x-2">
             <button
               className="bg-white py-2.5 px-4 rounded-md shadow-md hover:bg-gray-100 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transform hover:scale-105 active:scale-95"
@@ -204,17 +280,27 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
               </span>
             </button>
           </div>
+          
+          {/* Image Counter */}
+          {images.length > 1 && (
+            <div className="absolute top-4 left-4 bg-black/60 text-white px-3 py-1.5 rounded-full text-sm font-medium">
+              {activeImageIndex + 1} / {images.length}
+            </div>
+          )}
 
           {/* Thumbnail Gallery */}
           {images.length > 1 && (
-            <div className="container mx-auto px-4 -mt-16 relative z-10">
-              <div className="flex space-x-2 overflow-x-auto pb-4 scrollbar-hide">
+            <div className="container mx-auto px-4 absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/60 to-transparent pt-12 pb-4">
+              <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
                 {images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setActiveImageIndex(index)}
-                    className={`flex-shrink-0 h-24 w-32 relative rounded overflow-hidden ${activeImageIndex === index ? 'ring-2 ring-blue-600' : ''
-                      }`}
+                    className={`flex-shrink-0 h-20 w-28 relative rounded overflow-hidden border-2 transition-all duration-200 ${
+                      activeImageIndex === index 
+                        ? 'border-blue-500 scale-105' 
+                        : 'border-white/40 hover:border-white hover:scale-105'
+                    }`}
                   >
                     <Image
                       src={image}
@@ -693,19 +779,6 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
           currentPropertyId={property.id}
         />
 
-        {/* Photo Gallery Modal */}
-        <ClientOnly>
-          {galleryOpen && (
-            <PhotoGallery
-              key={`gallery-${key}`}
-              images={images}
-              isOpen={galleryOpen}
-              onClose={closeGallery}
-              initialIndex={activeImageIndex}
-            />
-          )}
-        </ClientOnly>
-
         {/* Back to Top Button - appears when scrolled down */}
         {scrollProgress > 20 && (
           <button
@@ -720,6 +793,19 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
           </button>
         )}
       </div>
+      
+      {/* Full-screen Photo Gallery */}
+      <ClientOnly>
+        {galleryOpen && images.length > 0 && (
+          <PhotoGallery
+            images={images}
+            isOpen={galleryOpen}
+            onClose={closeGallery}
+            initialIndex={activeImageIndex}
+            key={key}
+          />
+        )}
+      </ClientOnly>
     </main>
   );
 }

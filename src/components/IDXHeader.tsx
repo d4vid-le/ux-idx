@@ -264,13 +264,13 @@ const IDXHeader: React.FC = () => {
     }
     
     return (
-      <div className="flex items-start p-2">
-        <div className="mr-2 mt-0.5">
+      <div className="flex items-center px-3 py-1.5">
+        <div className="mr-2 flex-shrink-0">
           {icon}
         </div>
-        <div>
-          <div className="text-sm font-medium text-gray-900">{suggestion.name}</div>
-          {labelText && <div className="text-xs text-gray-500">{labelText}</div>}
+        <div className="flex-1 min-w-0">
+          <div className="text-xs font-medium text-gray-800 truncate">{suggestion.name}</div>
+          {labelText && <div className="text-[10px] text-gray-400">{labelText}</div>}
         </div>
       </div>
     );
@@ -301,16 +301,16 @@ const IDXHeader: React.FC = () => {
         </div>
 
         {/* Search form */}
-        <div className="bg-white rounded-lg shadow-lg max-w-3xl mx-auto overflow-hidden">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg shadow-sm max-w-xl mx-auto overflow-hidden transition-all duration-200 hover:shadow">
           {/* Search Form Content */}
-          <div className="px-4 py-4">
+          <div className="p-1">
             <form onSubmit={handleSearch}>
               <div className="w-full">
                 {/* Location with Autocomplete - always visible for all search types */}
                 <div className="w-full relative">
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="relative flex items-center">
+                    <div className="absolute left-2 flex items-center pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
@@ -320,7 +320,7 @@ const IDXHeader: React.FC = () => {
                       type="text" 
                       name="location"
                       placeholder="City, Neighborhood, or ZIP"
-                      className="w-full p-3 pl-10 pr-28 rounded-md border border-gray-300 focus:ring focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                      className="w-full py-2.5 pl-7 pr-24 rounded-md border-0 focus:ring-1 focus:ring-blue-500 text-gray-700 placeholder-gray-400 text-sm"
                       value={searchParams.location}
                       onChange={handleInputChange}
                       onFocus={() => {
@@ -336,8 +336,8 @@ const IDXHeader: React.FC = () => {
                       autoComplete="off"
                     />
                     {isLoading && (
-                      <div className="absolute top-1/2 right-24 transform -translate-y-1/2">
-                        <svg className="animate-spin h-4 w-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <div className="absolute top-1/2 right-20 transform -translate-y-1/2">
+                        <svg className="animate-spin h-3 w-3 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -347,10 +347,10 @@ const IDXHeader: React.FC = () => {
                     {/* Search button */}
                     <button 
                       type="submit"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center transition-all duration-200 shadow-sm hover:shadow-md"
+                      className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-gray-800 hover:bg-gray-700 active:bg-gray-900 active:scale-95 text-white px-3 py-1.5 rounded-md flex items-center transition-all duration-200 text-sm shadow-sm hover:shadow"
                       aria-label="Search Properties"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                       </svg>
                       <span className="font-medium">Search</span>
@@ -361,14 +361,14 @@ const IDXHeader: React.FC = () => {
                   {showSuggestions && (
                     <div 
                       ref={suggestionsRef}
-                      className="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-72 overflow-y-auto"
+                      className="absolute z-10 mt-1 w-full bg-white shadow-md rounded-md max-h-64 overflow-y-auto border-0"
                     >
                       {locationSuggestions.length > 0 ? (
                         <div>
                           {locationSuggestions.map((suggestion) => (
                             <div 
                               key={suggestion.id} 
-                              className="cursor-pointer hover:bg-blue-50"
+                              className="cursor-pointer hover:bg-gray-50 transition-colors duration-150"
                               onClick={() => selectLocationSuggestion(suggestion)}
                             >
                               {renderSuggestionItem(suggestion)}
@@ -376,21 +376,21 @@ const IDXHeader: React.FC = () => {
                           ))}
                         </div>
                       ) : (
-                        <div className="p-3 text-sm text-gray-500">
+                        <div className="p-2 text-xs text-gray-500">
                           No locations found. Try a different search.
                         </div>
                       )}
                       
                       {/* Radius selector - shown after location is selected */}
                       {searchParams.location && (searchParams.lat || searchParams.lng) && (
-                        <div className="p-3 border-t border-gray-200">
+                        <div className="p-2 border-t border-gray-100">
                           <div className="flex items-center">
-                            <label className="text-sm text-gray-600 mr-2">Distance:</label>
+                            <label className="text-xs text-gray-600 mr-2">Distance:</label>
                             <select
                               name="radius"
                               value={searchParams.radius}
                               onChange={handleInputChange}
-                              className="text-sm border border-gray-300 rounded p-1"
+                              className="text-xs border border-gray-200 rounded p-1 bg-gray-50"
                             >
                               <option value="1">1 mile</option>
                               <option value="3">3 miles</option>
