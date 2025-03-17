@@ -4,7 +4,7 @@ import { Badge } from '../../../components/ui/badge';
 import { Heart, ArrowUpRight } from 'lucide-react';
 import { useFavorites } from '@/hooks/useFavorites';
 
-interface PropertyCardProps {
+export interface PropertyCardProps {
   id: string;
   title: string;
   address: string;
