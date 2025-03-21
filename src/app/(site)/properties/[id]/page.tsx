@@ -736,7 +736,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
                   </div>
                   <div>
                     <div className="text-sm text-gray-500">Listing Courtesy of</div>
-                    <div className="font-medium">The Finelli Team</div>
+                    <div className="font-medium">REBNY</div>
                   </div>
                 </div>
               </div>
