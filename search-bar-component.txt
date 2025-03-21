@@ -1,0 +1,192 @@
+# Property Search Bar Component for Webflow
+
+## Required Dependencies
+Add these in your Webflow page's head section:
+
+```html
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Custom CSS -->
+<style>
+  .search-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    padding: 0.75rem;
+  }
+
+  .search-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .search-input-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: #1f2937;
+    transition: all 0.2s;
+  }
+
+  .search-input::placeholder {
+    color: #9ca3af;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #4b5563;
+    box-shadow: 0 0 0 2px rgba(75, 85, 99, 0.1);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .search-button {
+    background-color: #374151;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .search-button:hover {
+    background-color: #1f2937;
+  }
+
+  .search-button:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 640px) {
+    .search-wrapper {
+      flex-direction: column;
+    }
+    
+    .search-button {
+      width: 100%;
+    }
+  }
+</style>
+```
+
+## Component HTML
+Add this where you want the search bar to appear:
+
+```html
+<div class="search-container">
+  <div class="search-wrapper">
+    <div class="search-input-wrapper">
+      <input
+        type="text"
+        placeholder="Enter location, address, or ZIP code"
+        class="search-input"
+      />
+      <svg
+        class="search-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
+    <button class="search-button">
+      Search
+    </button>
+  </div>
+</div>
+```
+
+## JavaScript
+Add this at the end of your body tag:
+
+```html
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // Function to handle search
+  function handleSearch() {
+    const searchInput = document.querySelector('.search-input');
+    const searchTerm = searchInput.value.trim();
+    if (searchTerm) {
+      // Navigate to property listings page with search query
+      window.location.href = `/properties?search=${encodeURIComponent(searchTerm)}`;
+    }
+  }
+
+  // Handle search button click
+  document.querySelector('.search-button').addEventListener('click', handleSearch);
+
+  // Handle enter key in search input
+  document.querySelector('.search-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  });
+</script>
+```
+
+## Implementation Instructions
+
+1. In your Webflow project:
+   - Go to Project Settings > Custom Code
+   - Add the CSS code in the "Head Code" section
+   - Add the JavaScript code in the "Footer Code" section
+
+2. In your Webflow page:
+   - Add an HTML embed element where you want the search bar to appear
+   - Paste the HTML code into the embed element
+
+3. Customization:
+   - You can modify the colors by changing the hex codes in the CSS
+   - Adjust the width by modifying the `max-width` in the `.search-container` class
+   - Change the border radius by modifying the `border-radius` properties
+   - Update the placeholder text in the input element
+   - Modify the button text and padding as needed
+
+4. Functionality:
+   - The search button and enter key will navigate to the property listings page
+   - The search term will be added as a URL parameter
+   - The property listings page can use this parameter to filter results
+
+5. Responsive Design:
+   - The component is responsive and will work on mobile devices
+   - On mobile screens, the search bar and button will stack vertically
+   - The search bar will adjust its width based on the container
+
+## Notes
+- Make sure to test the component across different screen sizes
+- You may need to adjust the styling to match your Webflow site's design
+- The component uses Tailwind CSS for some utility classes, but the main styling is custom CSS
+- The Lucide icons are included for the search icon, but you can replace it with any other icon library
+- The search functionality assumes you have a property listings page at `/properties`
+- You may need to adjust the URL path in the JavaScript code to match your actual property listings page URL 

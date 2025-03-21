@@ -1,5 +1,6 @@
-import { MapContainer, TileLayer, Marker, Popup, Icon } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Icon } from 'leaflet';
 
 interface PropertyMapProps {
   latitude: number;

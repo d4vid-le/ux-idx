@@ -750,7 +750,7 @@ export default function PropertyDetailsPage({ params }: { params: { id: string }
             <div className="flex items-center justify-center mb-6">
               <div className="text-center">
                 <div className="text-sm font-medium text-gray-700 mb-2">Listed by</div>
-                <div className="font-bold text-lg">The Finelli Team</div>
+                <div className="font-bold text-lg">Compass</div>
                 <div className="text-sm text-gray-600 mt-1">Licensed Real Estate Broker</div>
               </div>
             </div>
