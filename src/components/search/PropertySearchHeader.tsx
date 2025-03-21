@@ -82,39 +82,8 @@ const PropertySearchHeader: React.FC<PropertySearchHeaderProps> = ({
 
   return (
     <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-      {/* Main navigation */}
-      <div className="border-b border-gray-200">
-        <div className="container mx-auto px-4 py-2">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-8">
-              <Link href="/" className="text-xl font-bold text-gray-900">
-                IDX Solution
-              </Link>
-              <nav className="hidden md:flex">
-                <ul className="flex space-x-6">
-                  <li><Link href="/" className="text-gray-600 hover:text-gray-900">Home</Link></li>
-                  <li><Link href="/search" className="text-blue-600 font-medium">Search</Link></li>
-                  <li><Link href="/saved" className="text-gray-600 hover:text-gray-900">Saved</Link></li>
-                </ul>
-              </nav>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/saved" className="text-gray-700 hover:text-gray-900">
-                <Heart className="h-5 w-5 text-gray-700 hover:text-gray-900" />
-              </Link>
-              <Button variant="outline" className="border-gray-300 text-gray-700">
-                <Link href="/dashboard">Log in</Link>
-              </Button>
-              <Button variant="outline" className="border-gray-300 text-gray-700">
-                <Link href="/signup">Sign up</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Search and filters - Improved padding and alignment */}
-      <div className="border-b border-gray-100">
+      <div className="border-b border-gray-200">
         <div className="container mx-auto px-4 py-2">
           {/* Integrated search bar and filters on one line */}
           <div className="flex flex-wrap items-center gap-2">
