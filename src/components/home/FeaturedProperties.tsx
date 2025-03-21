@@ -164,7 +164,7 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({
   subtitle = "Discover our handpicked selection of exceptional properties"
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const propertiesPerPage = 4;
+  const propertiesPerPage = 3;
   
   // Track current image index for each property
   const [currentImageIndexes, setCurrentImageIndexes] = useState<{[key: number]: number}>({});
@@ -262,7 +262,7 @@ const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({
         </div>
         
         {/* Property Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentProperties.map((property) => (
             <Link href={`/properties/${property.id}`} key={property.id}>
               <div className="bg-[#1D1D1D] rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer h-full">
