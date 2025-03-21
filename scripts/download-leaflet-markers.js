@@ -4,6 +4,7 @@ const path = require('path');
 
 const MARKER_ICONS = {
   'marker-icon.png': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  'marker-icon-selected.png': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
   'marker-shadow.png': 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png'
 };
 

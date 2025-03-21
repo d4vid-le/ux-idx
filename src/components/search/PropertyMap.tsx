@@ -2,9 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Property } from '@/types/property';
-import { ChevronUp, ChevronDown, X, Search, MapPin, Bed, Bath, Square } from 'lucide-react';
+import { ChevronUp, ChevronDown, X, Search, MapPin, Bed, Bath, Square, Home, Calendar, DollarSign } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import { Icon, LatLngTuple } from 'leaflet';
 
 interface PropertyMapProps {
   properties: Property[];
@@ -16,6 +19,15 @@ interface PropertyMapProps {
   error?: string;
 }
 
+// Component to handle map updates when center coordinates change
+function ChangeView({ center }: { center: LatLngTuple }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center);
+  }, [center, map]);
+  return null;
+}
+
 const PropertyMap: React.FC<PropertyMapProps> = ({
   properties,
   selectedProperty,
@@ -25,7 +37,6 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   isLoading,
   error
 }) => {
-  const mapRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [infoWindowOpen, setInfoWindowOpen] = useState<string | null>(null);
   const [infoWindowPosition, setInfoWindowPosition] = useState<{ x: number; y: number } | null>(null);
@@ -45,6 +56,18 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
       currency: 'USD',
       maximumFractionDigits: 0,
     }).format(price);
+  };
+
+  // Format monthly costs
+  const formatMonthlyCosts = (property: Property): string => {
+    const costs = [];
+    if (property.commonCharges) {
+      costs.push(`Common Charges: ${formatPrice(property.commonCharges)}/mo`);
+    }
+    if (property.realEstateTax) {
+      costs.push(`Tax: ${formatPrice(property.realEstateTax)}/mo`);
+    }
+    return costs.join(' • ');
   };
 
   // Simulate map loading
@@ -75,14 +98,17 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
     window.location.href = `/properties/${propertyId}`;
   };
 
+  // Default center coordinates (Manhattan)
+  const defaultCenter: LatLngTuple = [40.7128, -74.0060];
+  const center: LatLngTuple = centerCoordinates ? [centerCoordinates.lat, centerCoordinates.lng] : defaultCenter;
+
+  // Get the selected property for the info window
+  const selectedPropertyData = properties.find(p => p.id === infoWindowOpen);
+
   return (
     <div className="relative h-full w-full">
       {/* Map Container */}
-      <div 
-        ref={mapRef} 
-        className="w-full h-full bg-gray-100"
-        style={{ minHeight: '100%' }}
-      >
+      <div className="w-full h-full bg-gray-100">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-700 mx-auto"></div>
@@ -92,135 +118,161 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
             <p className="text-red-500">{error}</p>
           </div>
         ) : (
-          <div className="relative h-full w-full bg-gray-50 flex flex-col">
-            {/* Mock Map background - in a real implementation, this would be a Google Map */}
-            <div className="absolute inset-0 bg-cover bg-center opacity-60" 
-                style={{ backgroundImage: 'url("https://maps.googleapis.com/maps/api/staticmap?center=40.73,-73.99&zoom=14&size=1200x1200&key=DEMO_KEY")' }}>
-            </div>
-            
-            {/* Property Markers */}
-            <div className="absolute inset-0">
+          <div className="relative h-full w-full">
+            <MapContainer
+              center={center}
+              zoom={14}
+              scrollWheelZoom={true}
+              className="h-full w-full"
+            >
+              <ChangeView center={center} />
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
               {properties.map((property) => (
-                <div key={property.id} className="absolute" style={{ 
-                  top: `${Math.random() * 80 + 10}%`, 
-                  left: `${Math.random() * 80 + 10}%` 
-                }}>
-                  {/* Price Marker */}
-                  <div 
-                    className={`
-                      shadow-md rounded-full px-3 py-1 text-sm font-medium cursor-pointer
-                      ${selectedProperty?.id === property.id 
-                        ? 'bg-black text-white' 
-                        : 'bg-black/70 text-white hover:bg-black/80'
-                      }
-                    `}
-                    onClick={(e) => {
-                      onPropertySelect(property);
-                      showInfoWindow(e, property.id);
-                    }}
-                    onDoubleClick={() => navigateToProperty(property.id)}
-                  >
-                    {formatPriceForMarker(property.price)}
-                  </div>
-                  
-                  {/* Property Info Window - Flex Row Layout */}
-                  {infoWindowOpen === property.id && (
-                    <div className="fixed inset-0 z-50 pointer-events-none" onClick={(e) => closeInfoWindow(e)}>
-                      <Link 
-                        href={`/properties/${property.id}`}
-                        className="absolute z-20 w-80 bg-[#1D1D1D] rounded-lg shadow-lg pointer-events-auto overflow-hidden"
-                        style={{
-                          top: `${infoWindowPosition?.y || 0}px`,
-                          left: `${infoWindowPosition?.x || 0}px`,
-                          transform: 'translate(-50%, 10px)'
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="relative">
-                          {/* Close button */}
-                          <button 
-                            className="absolute top-2 right-2 h-6 w-6 bg-white/80 hover:bg-white rounded-full flex items-center justify-center z-10 text-gray-600 hover:text-gray-900"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              closeInfoWindow(e);
-                            }}
-                          >
-                            <X size={14} />
-                          </button>
-                          
-                          <div className="flex flex-row h-28">
-                            {/* Left: Property image */}
-                            <div className="relative h-full w-28 flex-shrink-0 overflow-hidden rounded-l-lg">
-                              <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all z-10"></div>
-                              <Image 
-                                src={property.imageUrl} 
-                                alt={property.title} 
-                                fill 
-                                className="object-cover" 
-                              />
-                              {/* Status Badge */}
-                              <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded text-[10px] z-20">
-                                {property.status}
-                              </div>
-                            </div>
-                            
-                            {/* Right: Property details */}
-                            <div className="p-3 flex-1 min-w-0 flex flex-col">
-                              {/* Price */}
-                              <p className="text-white font-medium text-sm">
-                                {formatPrice(property.price)}
-                              </p>
-                              
-                              {/* Location with neighborhood */}
-                              <div className="text-white text-xs mt-1">
-                                <div className="truncate">{property.address}</div>
-                                <div className="text-gray-400 text-[10px] mt-0.5">Upper East Side</div>
-                              </div>
-                              
-                              {/* Property Details */}
-                              <div className="flex items-center space-x-2 text-white text-xs mt-auto pt-1">
-                                <div className="flex items-center">
-                                  <span>{property.bedrooms} bd</span>
-                                </div>
-                                <span className="text-gray-500 text-xs">|</span>
-                                <div className="flex items-center">
-                                  <span>{property.bathrooms} ba</span>
-                                </div>
-                                <span className="text-gray-500 text-xs">|</span>
-                                <div className="flex items-center">
-                                  <span>{property.sqft.toLocaleString()} sq²</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                <Marker
+                  key={property.id}
+                  position={[property.location.lat, property.location.lng] as LatLngTuple}
+                  icon={new Icon({
+                    iconUrl: selectedProperty?.id === property.id ? '/marker-icon-selected.png' : '/marker-icon.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowUrl: '/marker-shadow.png',
+                    shadowSize: [41, 41],
+                  })}
+                  eventHandlers={{
+                    click: () => onPropertySelect(property),
+                  }}
+                >
+                  <Popup>
+                    <div className="p-2">
+                      <div className="text-gray-700 font-medium">{property.address}</div>
+                      <div className="text-sm text-gray-600">{formatPrice(property.price)}</div>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                        <span>{property.bedrooms} bd</span>
+                        <span>•</span>
+                        <span>{property.bathrooms} ba</span>
+                        <span>•</span>
+                        <span>{property.sqft.toLocaleString()} sq²</span>
+                      </div>
+                      {property.propertyType && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          {property.propertyType}
                         </div>
-                      </Link>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </Popup>
+                </Marker>
               ))}
-            </div>
+            </MapContainer>
           </div>
         )}
       </div>
 
-      {/* Map Controls */}
-      <div className="absolute bottom-4 right-4 flex flex-col gap-2">
-        <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50">
-          <ChevronUp size={20} className="text-gray-700" />
-        </button>
-        <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50">
-          <ChevronDown size={20} className="text-gray-700" />
-        </button>
-      </div>
+      {/* Property Info Window */}
+      {infoWindowOpen && selectedPropertyData && (
+        <div className="fixed inset-0 z-50 pointer-events-none" onClick={(e) => closeInfoWindow(e)}>
+          <Link 
+            href={`/properties/${infoWindowOpen}`}
+            className="absolute z-20 w-80 bg-[#1D1D1D] rounded-lg shadow-lg pointer-events-auto overflow-hidden"
+            style={{
+              top: `${infoWindowPosition?.y || 0}px`,
+              left: `${infoWindowPosition?.x || 0}px`,
+              transform: 'translate(-50%, 10px)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative">
+              {/* Close button */}
+              <button 
+                className="absolute top-2 right-2 h-6 w-6 bg-white/80 hover:bg-white rounded-full flex items-center justify-center z-10 text-gray-600 hover:text-gray-900"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  closeInfoWindow(e);
+                }}
+              >
+                <X size={14} />
+              </button>
+              
+              <div className="flex">
+                {/* Left: Property image */}
+                <div className="relative h-full w-28 flex-shrink-0 overflow-hidden rounded-l-lg">
+                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all z-10"></div>
+                  <Image 
+                    src={selectedPropertyData.imageUrl} 
+                    alt="Property" 
+                    fill 
+                    className="object-cover" 
+                  />
+                  {/* Status Badge */}
+                  <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded text-[10px] z-20">
+                    {selectedPropertyData.status}
+                  </div>
+                </div>
+                
+                {/* Right: Property details */}
+                <div className="flex-1 p-3 flex flex-col">
+                  {/* Price */}
+                  <p className="text-white font-medium text-sm">
+                    {formatPrice(selectedPropertyData.price)}
+                  </p>
+                  
+                  {/* Location with neighborhood */}
+                  <div className="text-white text-xs mt-1">
+                    <div className="truncate">{selectedPropertyData.address}</div>
+                    <div className="text-gray-400 text-[10px] mt-0.5">
+                      {selectedPropertyData.neighborhood || 'New York City'}
+                    </div>
+                  </div>
+                  
+                  {/* Property Details */}
+                  <div className="flex items-center space-x-2 text-white text-xs mt-1">
+                    <div className="flex items-center">
+                      <Bed size={12} className="mr-1" />
+                      <span>{selectedPropertyData.bedrooms} bd</span>
+                    </div>
+                    <span className="text-gray-500 text-xs">|</span>
+                    <div className="flex items-center">
+                      <Bath size={12} className="mr-1" />
+                      <span>{selectedPropertyData.bathrooms} ba</span>
+                    </div>
+                    <span className="text-gray-500 text-xs">|</span>
+                    <div className="flex items-center">
+                      <Square size={12} className="mr-1" />
+                      <span>{selectedPropertyData.sqft.toLocaleString()} sq²</span>
+                    </div>
+                  </div>
 
-      {/* Drawing Tools */}
-      <div className="absolute top-4 left-4">
-        <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 flex items-center justify-center">
-          <Search size={20} className="text-gray-700" />
-        </button>
-      </div>
+                  {/* Additional REBNY Details */}
+                  <div className="mt-2 text-xs text-gray-400">
+                    {selectedPropertyData.propertyType && (
+                      <div className="flex items-center">
+                        <Home size={12} className="mr-1" />
+                        <span>{selectedPropertyData.propertyType}</span>
+                      </div>
+                    )}
+                    {selectedPropertyData.yearBuilt && (
+                      <div className="flex items-center">
+                        <Calendar size={12} className="mr-1" />
+                        <span>Built in {selectedPropertyData.yearBuilt}</span>
+                      </div>
+                    )}
+                    {formatMonthlyCosts(selectedPropertyData).length > 0 && (
+                      <div className="flex items-center">
+                        <DollarSign size={12} className="mr-1" />
+                        <span>{formatMonthlyCosts(selectedPropertyData)}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,10 @@
 'use client';
 
 import { MapPin } from 'lucide-react';
-import Image from 'next/image';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import { Icon } from 'leaflet';
+import { useEffect, useState } from 'react';
 
 interface PropertyLocationMapProps {
   address: string;
@@ -17,23 +20,61 @@ export default function PropertyLocationMap({
   location,
   neighborhood
 }: PropertyLocationMapProps) {
-  // In a real application, we would use a proper map library like Google Maps or Mapbox
-  // For now, we'll use a static map image as a placeholder
-  const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${location.lat},${location.lng}&zoom=15&size=600x300&maptype=roadmap&markers=color:red%7C${location.lat},${location.lng}&key=YOUR_API_KEY`;
-  
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="mb-8">
+        <h2 className="text-xl font-bold mb-4">Location</h2>
+        <div className="bg-gray-50 rounded-lg overflow-hidden">
+          <div className="relative h-64 w-full">
+            <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+              <div className="text-center p-4">
+                <MapPin size={32} className="mx-auto text-gray-700 mb-2" />
+                <p className="font-medium">Loading Map...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-8">
       <h2 className="text-xl font-bold mb-4">Location</h2>
       <div className="bg-gray-50 rounded-lg overflow-hidden">
-        <div className="relative h-64 w-full">
-          {/* In a real app, replace this with an actual map component */}
-          <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-            <div className="text-center p-4">
-              <MapPin size={32} className="mx-auto text-gray-700 mb-2" />
-              <p className="font-medium">Map View</p>
-              <p className="text-sm text-gray-600 mt-1">Interactive map would be displayed here</p>
-            </div>
-          </div>
+        <div className="relative h-[400px] w-full">
+          <MapContainer
+            center={[location.lat, location.lng]}
+            zoom={15}
+            scrollWheelZoom={false}
+            className="h-full w-full"
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker
+              position={[location.lat, location.lng]}
+              icon={new Icon({
+                iconUrl: '/marker-icon.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowUrl: '/marker-shadow.png',
+                shadowSize: [41, 41],
+              })}
+            >
+              <Popup>
+                <div className="text-gray-700 font-medium">{address}</div>
+              </Popup>
+            </Marker>
+          </MapContainer>
         </div>
         <div className="p-4">
           <div className="text-center mb-8">
