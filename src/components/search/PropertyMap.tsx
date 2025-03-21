@@ -1,17 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { Property } from '@/types/property';
-import { ChevronUp, ChevronDown, X, Search, MapPin, Bed, Bath, Square, Home, Calendar, DollarSign } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { X, Bed, Bath, Square, Home, Calendar, DollarSign } from 'lucide-react';
+import { Property } from '@/types/property';
+import type { LatLngTuple } from 'leaflet';
+import { Icon } from 'leaflet';
+
+// Import Leaflet CSS
 import 'leaflet/dist/leaflet.css';
-import { Icon, LatLngTuple } from 'leaflet';
 
 interface PropertyMapProps {
   properties: Property[];
-  selectedProperty: Property | null;
+  selectedProperty?: Property;
   onPropertySelect: (property: Property) => void;
   centerCoordinates?: { lat: number; lng: number };
   searchRadius?: number;
@@ -19,14 +22,43 @@ interface PropertyMapProps {
   error?: string;
 }
 
-// Component to handle map updates when center coordinates change
-function ChangeView({ center }: { center: LatLngTuple }) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center);
-  }, [center, map]);
-  return null;
-}
+// Dynamically import the map components with no SSR
+const MapContainer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+
+const TileLayer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+
+const Marker = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Marker),
+  { ssr: false }
+);
+
+const Popup = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Popup),
+  { ssr: false }
+);
+
+// Component to handle map view updates
+const ChangeView = dynamic(
+  () => {
+    return import('react-leaflet').then((mod) => {
+      const Component = ({ center }: { center: LatLngTuple }) => {
+        const map = mod.useMap();
+        useEffect(() => {
+          map.setView(center);
+        }, [center, map]);
+        return null;
+      };
+      return Component;
+    });
+  },
+  { ssr: false }
+);
 
 const PropertyMap: React.FC<PropertyMapProps> = ({
   properties,
@@ -37,73 +69,53 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   isLoading,
   error
 }) => {
-  const [mapLoaded, setMapLoaded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [infoWindowOpen, setInfoWindowOpen] = useState<string | null>(null);
   const [infoWindowPosition, setInfoWindowPosition] = useState<{ x: number; y: number } | null>(null);
 
-  // Format price for display on markers
-  const formatPriceForMarker = (price: number): string => {
-    if (price >= 1000000) {
-      return `$${(price / 1000000).toFixed(1)}M`;
-    }
-    return `$${(price / 1000).toFixed(0)}K`;
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const closeInfoWindow = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setInfoWindowOpen(null);
+    setInfoWindowPosition(null);
   };
 
-  // Format price with commas
-  const formatPrice = (price: number): string => {
+  const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
+      minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price);
   };
 
-  // Format monthly costs
-  const formatMonthlyCosts = (property: Property): string => {
+  const formatMonthlyCosts = (property: Property) => {
     const costs = [];
     if (property.commonCharges) {
-      costs.push(`Common Charges: ${formatPrice(property.commonCharges)}/mo`);
+      costs.push(`Common Charges: ${formatPrice(property.commonCharges)}`);
     }
     if (property.realEstateTax) {
-      costs.push(`Tax: ${formatPrice(property.realEstateTax)}/mo`);
+      costs.push(`Tax: ${formatPrice(property.realEstateTax)}`);
     }
-    return costs.join(' • ');
+    return costs.join(' | ');
   };
 
-  // Simulate map loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMapLoaded(true);
-    }, 800);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Show info window for a property
-  const showInfoWindow = (e: React.MouseEvent, propertyId: string) => {
-    e.stopPropagation();
-    setInfoWindowOpen(propertyId === infoWindowOpen ? null : propertyId);
-    const rect = (e.target as HTMLDivElement).getBoundingClientRect();
-    setInfoWindowPosition({ x: rect.left, y: rect.top });
-  };
-
-  // Close info window
-  const closeInfoWindow = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setInfoWindowOpen(null);
-  };
-
-  // Navigate to property details page
-  const navigateToProperty = (propertyId: string) => {
-    window.location.href = `/properties/${propertyId}`;
-  };
-
-  // Default center coordinates (Manhattan)
   const defaultCenter: LatLngTuple = [40.7128, -74.0060];
   const center: LatLngTuple = centerCoordinates ? [centerCoordinates.lat, centerCoordinates.lng] : defaultCenter;
 
   // Get the selected property for the info window
   const selectedPropertyData = properties.find(p => p.id === infoWindowOpen);
+
+  if (!isMounted) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-700 mx-auto"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-full w-full">
@@ -199,7 +211,11 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
               
               <div className="flex">
                 {/* Left: Property image */}
-                <div className="relative h-full w-28 flex-shrink-0 overflow-hidden rounded-l-lg">
+                <Link 
+                  href={`/properties/${infoWindowOpen}`}
+                  className="relative h-32 w-28 flex-shrink-0 overflow-hidden rounded-l-lg"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all z-10"></div>
                   <Image 
                     src={selectedPropertyData.imageUrl} 
@@ -211,18 +227,28 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
                   <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded text-[10px] z-20">
                     {selectedPropertyData.status}
                   </div>
-                </div>
+                </Link>
                 
                 {/* Right: Property details */}
                 <div className="flex-1 p-3 flex flex-col">
                   {/* Price */}
-                  <p className="text-white font-medium text-sm">
+                  <Link 
+                    href={`/properties/${infoWindowOpen}`}
+                    className="text-white font-medium text-sm hover:text-gray-300 transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {formatPrice(selectedPropertyData.price)}
-                  </p>
+                  </Link>
                   
                   {/* Location with neighborhood */}
                   <div className="text-white text-xs mt-1">
-                    <div className="truncate">{selectedPropertyData.address}</div>
+                    <Link 
+                      href={`/properties/${infoWindowOpen}`}
+                      className="truncate hover:text-gray-300 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {selectedPropertyData.address}
+                    </Link>
                     <div className="text-gray-400 text-[10px] mt-0.5">
                       {selectedPropertyData.neighborhood || 'New York City'}
                     </div>
